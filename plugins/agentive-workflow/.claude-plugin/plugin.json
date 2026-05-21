@@ -1,0 +1,7 @@
+{
+  "name": "agentive-workflow",
+  "description": "Adversarial review and pre-implementation workflow skills, consolidated from dispatch-kit. Skills: bot-triage, code-review-evaluator, pre-implementation, review-handoff, self-review.",
+  "version": "1.0.0",
+  "author": { "name": "movito", "email": "fredrik.matheson@ixda.no" },
+  "keywords": ["workflow", "code-review", "agentive", "adversarial"]
+}

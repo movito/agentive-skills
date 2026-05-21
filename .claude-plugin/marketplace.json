@@ -1,0 +1,20 @@
+{
+  "name": "agentive-skills",
+  "owner": {
+    "name": "movito",
+    "email": "fredrik.matheson@ixda.no"
+  },
+  "metadata": {
+    "description": "Private skills marketplace for movito repos. Single source of truth for the agentive review/implementation workflow skills.",
+    "version": "1.0.0"
+  },
+  "plugins": [
+    {
+      "name": "agentive-workflow",
+      "source": "./plugins/agentive-workflow",
+      "description": "Adversarial review + pre-implementation workflow: bot-triage, code-review-evaluator, pre-implementation, review-handoff, self-review.",
+      "version": "1.0.0",
+      "author": { "name": "movito" }
+    }
+  ]
+}
