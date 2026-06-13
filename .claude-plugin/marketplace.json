@@ -5,15 +5,15 @@
     "email": "fredrik.matheson@ixda.no"
   },
   "metadata": {
-    "description": "Private skills marketplace for movito repos. Single source of truth for the agentive review/implementation workflow skills.",
-    "version": "1.0.0"
+    "description": "Marketplace for movito agentive projects. Single source of truth for the agentive review/implementation workflow: skills, commands, and agents.",
+    "version": "1.1.0"
   },
   "plugins": [
     {
       "name": "agentive-workflow",
       "source": "./plugins/agentive-workflow",
-      "description": "Adversarial review + pre-implementation workflow: bot-triage, code-review-evaluator, pre-implementation, review-handoff, self-review.",
-      "version": "1.0.0",
+      "description": "Agentive review + implementation workflow: 5 skills, 12 workflow commands, 4 agents (feature-developer-v7/v6, code-reviewer, ci-checker). Namespaced agentive-workflow:<name>.",
+      "version": "1.1.0",
       "author": { "name": "movito" }
     }
   ]

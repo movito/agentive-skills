@@ -70,7 +70,7 @@ For single-repo projects (no target section in `CLAUDE.md`), the same
 script reads from the current working-directory repo — no separate flag
 needed.
 
-See `.kit/context/2026-04-16-cross-repo-agent-pattern.md` for the full
+See `docs/CROSS-REPO-PATTERN.md` for the full
 cross-repo evaluator recipe.
 
 ## Step 1: Prepare Input
@@ -130,10 +130,10 @@ Include:
 **Cross-repo evaluator trio (recommended)**: run `code-reviewer-fast` on
 every PR as a fast gate, add `code-reviewer` for non-trivial changes, and
 add `claude-code` for security-sensitive code. Each model catches
-different classes of issues with minimal overlap (ID2-0002 validated this
-empirically — see `.kit/context/retros/ID2-0002-retro.md`).
+different classes of issues with minimal overlap (validated empirically
+across projects: distinct models surface largely non-overlapping findings).
 
-**Note**: `spec-compliance-fast` is NOT available — use manual spec checks or `/check-spec` (Gemini Flash via API) instead.
+**Note**: `spec-compliance-fast` is NOT available — use manual spec checks or `/agentive-workflow:check-spec` (Gemini Flash via API) instead.
 
 If the required API key is missing, fall back to another evaluator. If none of the keys are set, document the failure and proceed to human review.
 
@@ -204,5 +204,5 @@ fi
 ```
 
 Include this file in your next commit. The same recipe appears in
-`.kit/context/2026-04-16-cross-repo-agent-pattern.md` — keep the two in
+`docs/CROSS-REPO-PATTERN.md` — keep the two in
 sync when updating.

@@ -116,7 +116,7 @@ When you receive a fix prompt after CHANGES_REQUESTED:
 2. **Read the original task file** — refresh on acceptance criteria
 3. **Address required changes** — focus on HIGH severity first
 4. **Run tests**: `pytest tests/ -v`
-5. **Verify CI**: `/check-ci`
+5. **Verify CI**: `/agentive-workflow:check-ci`
 6. **Update review-starter** — note what was fixed
 7. **Notify user** — ready for re-review (Round 2)
 
