@@ -42,18 +42,24 @@ single-repo mode when no such section exists.
 | `ci-checker` | — | Interactive CI status verification |
 
 > The two `feature-developer` agents ship as **unfilled templates**: their
-> `## Project Context` and `### Stack Notes` carry `ACME-NNNN` / EXTENSION-POINT
+> `## Project Context` and `### Stack Notes` carry `ACME-NNNN` / EXTENSION POINT
 > placeholders. Each consuming project fills them in locally (or via its bootstrap),
 > because the right tech stack, task prefix, and layout differ per project.
 
 ### Depends on: helper scripts via the manifest channel (not the plugin)
 
-The cross-repo commands call helper scripts — `verify-ci.sh`, `check-bots.sh`,
-`preflight-check.sh`, `gh-review-helper.sh`, `prepare-review-input.sh`, and
-`lib/target_repo.sh` — that live in a project's `scripts/core/`. Those scripts are **not**
-shipped by this plugin; they are distributed through the agentive-starter-kit manifest sync
-(`scripts/.core-manifest.json`, `core_version` ≥ 2.1.0). A project consuming this plugin's
-commands needs that script generation present. The two channels are deliberate:
+Several components delegate to helper scripts that live in a project's `scripts/core/`:
+
+- the cross-repo **commands** call `verify-ci.sh` (`check-ci`), `check-bots.sh`
+  (`check-bots`), `preflight-check.sh` (`preflight`), and `gh-review-helper.sh`
+  (`triage-threads`);
+- the **`code-review-evaluator` skill** calls `prepare-review-input.sh`;
+- those `.sh` scripts in turn source `lib/target_repo.sh` for cross-repo detection.
+
+None of these scripts are shipped by this plugin; they are distributed through the
+agentive-starter-kit manifest sync (`scripts/.core-manifest.json`, `core_version` ≥ 2.1.0).
+A project consuming this plugin's commands/skills needs that script generation present.
+The two channels are deliberate:
 
 - **plugin** (this repo) → skills, commands, agents, to planning/consumer projects
 - **manifest** (agentive-starter-kit) → scripts + kit-internal artifact copies, kit-to-kit
