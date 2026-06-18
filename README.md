@@ -51,8 +51,8 @@ single-repo mode when no such section exists.
 Several components delegate to helper scripts that live in a project's `scripts/core/`:
 
 - the cross-repo **commands** call `verify-ci.sh` (`check-ci`), `check-bots.sh`
-  (`check-bots`), `preflight-check.sh` (`preflight`), and `gh-review-helper.sh`
-  (`triage-threads`);
+  (`check-bots`), `preflight-check.sh` (`preflight`), `gh-review-helper.sh`
+  (`triage-threads`), and `ci-check.sh` (`babysit-pr`'s local-checks step);
 - the **`code-review-evaluator` skill** calls `prepare-review-input.sh`;
 - those `.sh` scripts in turn source `lib/target_repo.sh` for cross-repo detection.
 
