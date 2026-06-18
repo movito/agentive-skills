@@ -10,7 +10,7 @@ created-by: "@movito with planner2"
 
 # Bot Review Triage
 
-Reference knowledge for triaging automated review comments. Use `/triage-threads` to begin a triage session.
+Reference knowledge for triaging automated review comments. Use `/agentive-workflow:triage-threads` to begin a triage session.
 
 ## API Endpoints (CRITICAL — read every word)
 
@@ -99,7 +99,7 @@ evaluator/bot overlap may indicate a spec-template gap).
 
 Each round follows the same loop:
 
-1. Wait for both bots (`/wait-for-bots` or `/check-bots`)
+1. Wait for both bots (`/agentive-workflow:wait-for-bots` or `/agentive-workflow:check-bots`)
 2. Triage ALL new threads — categorize as Fix or Resolve-without-fixing (see Severity-Based Triage above)
 3. Batch all fixes into one commit
 4. Push once → next round
