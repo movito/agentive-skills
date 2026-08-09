@@ -131,8 +131,9 @@ If you push code changes to GitHub (security reports, review documentation, etc.
 **Verification Pattern**:
 
 ```bash
-# Option 1: Slash command (preferred)
-/agentive-workflow:check-ci main
+# Option 1: Slash command (preferred) — no arg = auto-detect the branch.
+# Do NOT hardcode `main` — that verifies the base branch, not the change.
+/agentive-workflow:check-ci
 
 # Option 2: Direct script
 ./scripts/core/verify-ci.sh <branch-name>

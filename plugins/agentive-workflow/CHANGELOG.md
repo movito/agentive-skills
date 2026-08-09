@@ -26,6 +26,12 @@ next drift automatically.
 The upgrader agent's PREVIEW → ACK flow (docs/PLUGIN-UPGRADE-GUIDE.md
 in consuming projects) handles the reference reconcile for both renames.
 
+- **`wrap-up` no longer emits `phase_complete`**: its dispatch-kit
+  event step was removed upstream (KIT-0077 retired the dispatch
+  integration). Projects with automation listening for `phase_complete`
+  must adapt. (Other commands' optional `dispatch emit` steps remain,
+  marked fire-and-forget.)
+
 ### Added
 
 - **Agents**: `feature-developer` (2.1.1), `feature-developer-f5`

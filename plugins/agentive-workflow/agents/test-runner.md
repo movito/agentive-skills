@@ -142,21 +142,25 @@ cat .adversarial/logs/TASK-FILE--*.md
 **Technical**: External AI via adversarial-workflow (unattended: `echo y | ADVERSARIAL_UNATTENDED=1 adversarial …`), cost varies by evaluator, fully autonomous.
 
 ## Primary Testing Protocol
-1. Run the full test suite: `pytest tests/ -v`
-2. Run with coverage to verify threshold: `pytest tests/ --cov --cov-fail-under=80`
-3. Run specific test files when iterating: `pytest tests/test_<module>.py -v`
-4. Check for pattern lint violations: `python3 scripts/core/pattern_lint.py <files>`
+Test commands, framework, and thresholds are project-owned — read them
+from `CLAUDE.md` and the task spec before running anything
+(KIT-ADR-0025: no stack specifics in this distributed body).
+
+1. Run the full test suite the way the project's `CLAUDE.md` defines it
+2. Run with coverage against the project's configured threshold, if one exists
+3. Run specific test files when iterating on a failure
+4. Run the project's lint/pattern checks, if it defines any
 5. Document any failures and check against known issues
 
 ## Test Suite Location
-All tests live in `tests/` using pytest. Coverage target is 80% for new code (configured in `pyproject.toml`).
+Read from `CLAUDE.md` and the project's config (e.g. `pyproject.toml`,
+`package.json`). Coverage targets are project-owned.
 
 ## Success Criteria
-- All tests pass (`pytest tests/ -v`)
-- Coverage meets 80% threshold for new code
+- Full suite passes with the project's own runner
+- Coverage meets the project's configured threshold
 - No regression in previously passing tests
-- Pattern lint passes on changed files
-- CI check passes: `./scripts/core/ci-check.sh`
+- The project's lint and local CI checks pass
 
 ## Reporting
 Provide a clear test report with:
@@ -179,8 +183,9 @@ If you push code changes to GitHub (test fixes, test additions, etc.):
 **Verification Pattern**:
 
 ```bash
-# Option 1: Slash command (preferred)
-/agentive-workflow:check-ci main
+# Option 1: Slash command (preferred) — no arg = auto-detect the branch.
+# Do NOT hardcode `main` — that verifies the base branch, not the change.
+/agentive-workflow:check-ci
 
 # Option 2: Direct script
 ./scripts/core/verify-ci.sh <branch-name>

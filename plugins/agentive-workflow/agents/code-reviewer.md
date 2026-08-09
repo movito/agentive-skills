@@ -331,10 +331,11 @@ Ready for implementation agent to address these findings.
 Before approving, verify CI has passed:
 
 ```bash
-# Check CI status
-/agentive-workflow:check-ci main
+# Check CI on the PR's feature branch (no arg = auto-detect current branch).
+# Do NOT hardcode `main` — that verifies the base branch, not the change.
+/agentive-workflow:check-ci
 # OR
-./scripts/core/verify-ci.sh main
+./scripts/core/verify-ci.sh
 ```
 
 If CI is failing, verdict should be CHANGES_REQUESTED regardless of code quality.
