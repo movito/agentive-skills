@@ -59,6 +59,31 @@ Reference knowledge for triaging automated review comments. Use `/agentive-workf
   more spacing tweak in the same area), it's cheaper to apply than to justify
   declining. Treat it as Fix (easy) and batch with the other fixes.
 - When in doubt on Medium severity, fix it — it's cheaper than debating
+- **Check-run status is NOT review state** — `gh pr checks` reported
+  `pass` twice while CodeRabbit had filed CHANGES_REQUESTED
+  (KIT-0077, the fourth KIT-0062 face). They are different API
+  objects. The ONLY truth for review state is the `reviewThreads`
+  GraphQL query (+ review decision); never proceed on a green
+  check-run without fetching threads.
+- **Class sweeps must be indentation-tolerant** — when sweeping a
+  markdown/format class from one finding (e.g. MD040 bare fences), the
+  pattern is `^\s*` + token, never `^` + token: KIT-0067's `^```$`
+  sweep fixed 4 fences and missed a list-indented one three lines
+  away. A zero-hit grep proves the anchored token, not the class.
+- **Syntax-verify committable suggestions touching shell before applying** —
+  especially heredocs, quoting, or redirects: run `bash -n` (or a scratch
+  execution test) on the suggested code first. Committable ≠ compilable:
+  on KIT-0058 PR #91 a CodeRabbit committable suggestion was a bash syntax
+  error (heredoc body swallowed the `&&`-chained lines). If it fails, decline
+  and paste the test result into the thread.
+- **Read the REVIEW BODIES, not only the inline threads** — CodeRabbit
+  puts "outside diff range" findings in the review body where
+  thread-based triage never sees them. On KIT-0083 PR #106, round 3's
+  ONLY finding lived there: the shipped output claimed the library was
+  installed immediately before exiting 1 having installed nothing, and
+  it would have merged unread. After fetching threads, also fetch
+  `reviews[].body` for the latest round and scan for findings; treat
+  them with the same severity triage as threads.
 - **Triage ALL threads before fixing ANY. Then batch all fixes into one commit.**
 
 ## Batch Strategy
@@ -119,14 +144,14 @@ Each round follows the same loop:
 
 ## Reply Format
 
-Use `./scripts/core/gh-review-helper.sh` for all reply and resolve operations.
+Use `agentive review-helper` for all reply and resolve operations.
 The wrapper validates inputs and bypasses Claude Code's permission heuristic
 on complex `gh api` arguments.
 
 ### Reply to a thread
 
 ```bash
-./scripts/core/gh-review-helper.sh reply {pr_number} {comment_id} \
+agentive review-helper reply {pr_number} {comment_id} \
   'Fixed in {commit_sha}: {1-2 sentence description of what changed and where}.'
 ```
 
@@ -138,7 +163,7 @@ on complex `gh api` arguments.
 Same command, different body:
 
 ```bash
-./scripts/core/gh-review-helper.sh reply {pr_number} {comment_id} \
+agentive review-helper reply {pr_number} {comment_id} \
   'Acknowledged, but won'\''t fix: {clear technical justification}.'
 ```
 
@@ -154,23 +179,23 @@ Same command, different body:
 After posting a reply, resolve the thread using its GraphQL node ID:
 
 ```bash
-./scripts/core/gh-review-helper.sh resolve PRRT_abc123
+agentive review-helper resolve PRRT_abc123
 ```
 
 To resolve multiple threads, issue separate calls:
 
 ```bash
-./scripts/core/gh-review-helper.sh resolve PRRT_abc123
+agentive review-helper resolve PRRT_abc123
 ```
 
 ```bash
-./scripts/core/gh-review-helper.sh resolve PRRT_def456
+agentive review-helper resolve PRRT_def456
 ```
 
 ## Verifying Zero Unresolved
 
 ```bash
-./scripts/core/gh-review-helper.sh summary {pr_number}
+agentive review-helper summary {pr_number}
 ```
 
 Output: `Total:N Resolved:N Unresolved:N`
@@ -180,7 +205,7 @@ Target: `Unresolved:0` before proceeding.
 ## Fetching Thread Status
 
 ```bash
-./scripts/core/gh-review-helper.sh threads {pr_number}
+agentive review-helper threads {pr_number}
 ```
 
 Tab-separated output: `isResolved\tdatabaseId\tauthor\tthreadNodeId\tbody_excerpt`
