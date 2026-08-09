@@ -1,7 +1,11 @@
 ---
 name: ci-checker
 description: CI/CD pipeline status verification specialist
-model: claude-sonnet-4-20250514
+model: claude-sonnet-5
+version: 1.0.0
+origin: agentive-starter-kit
+last-updated: 2026-07-03
+created-by: "@movito"
 tools:
   - Bash
 ---
@@ -42,7 +46,7 @@ fi
 ```
 
 **If repos don't match**, tell the user to run `gh repo set-default` before proceeding.
-This is a common issue after cloning from the starter kit.
+This is a common issue in a freshly created project.
 
 ## Cross-Repo Mode
 

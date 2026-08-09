@@ -1,10 +1,10 @@
 ---
 description: Self-review pass after tests pass but before committing — systematic input boundary audit that catches issues TDD misses
 user-invocable: false
-version: 1.0.0
+version: 1.2.0
 origin: dispatch-kit
 origin-version: 0.3.2
-last-updated: 2026-02-27
+last-updated: 2026-07-05
 created-by: "@movito with planner2"
 ---
 
@@ -94,6 +94,36 @@ Read every function in the file you changed (not just the ones you wrote):
 
 6. **Module documentation**: If you changed a module's public API, parameters, or invariants, check if the module has a documentation file or contract (e.g., a module-level CLAUDE.md, README, or docstring). Update it if the public interface changed. When adding a breaking-change trigger that references another module, verify the inverse trigger exists in that module's documentation too.
 
+7. **Wrapper exit codes (frozen contracts)**: a wrapper around an engine with a frozen exit-code contract must NOT reuse the engine's reserved success/drift codes (`0`/`1`) for wrapper-level failures — automation reading the exit code must never mistake a hard failure for "updates available". Map wrapper failures onto the engine's non-reserved codes by kind: environment/precondition failures (can't branch, engine missing, dirty tree, bad flags) exit `2` (the engine's usage-error code); source-acquisition/I/O failures exit `4` (the engine's I/O-error code). Reference implementations live in the upstream kit. Three separate KIT-0036 bot findings traced to this one principle.
+
+8. **Scoped staging in commit helpers**: any helper that programmatically `git add`s and commits must stage the *exact* changed paths it produced (from a report/manifest), never whole roots or `git add -A` / `git add .` — otherwise unrelated uncommitted work in those trees gets swept into the automated commit. Only a provably clean tree (e.g. a fresh CI checkout) excuses broad staging, and even then prefer scoping. Deleted files are staged as deletions via `git add -- <path>`. Reference implementations live in the upstream kit. Recurred twice within KIT-0036.
+
+9. **Shipped hints about other tools' interfaces must be verified against the installed version**: any user-facing hint a script prints about another tool (an env flag, a CLI option, an invocation pattern) is a runtime claim — grep the installed package or run it once before shipping. KIT-0044: `prepare-review-input.sh` advertised `ADVERSARIAL_UNATTENDED=1`, which never existed in the installed adversarial-workflow library; every non-TTY large-input evaluator run died on the interactive prompt until the hint was replaced with the verified `echo y |` pattern (1.5.1). Same family as the spec-side verified-runtime-facts rule.
+    **HOW to find the installed package** (KIT-0092 triage note): a repo-venv grep returns a FALSE NEGATIVE for uv-installed CLIs — the tool lives outside the repo. Resolve the real install first: `command -v <tool>` then follow it (`uv tool` installs land under `~/.local/share/uv/tools/<name>/`); grep THERE, or just run the tool once. A "no match" in `.venv/` proves nothing about what the user actually executes.
+
+10. **Class/session-scoped fixtures that shell out must scrub their own env**: function-scoped autouse isolation (conftest.py) does not reach wider-scoped fixtures — any class- or session-scoped fixture spawning subprocesses builds an explicitly scrubbed environment (`_scrubbed_env()` pattern) instead of trusting autouse. The gap is invisible until a hook-context run leaks `GIT_*` into a wider-scoped fixture (KIT-0048; the corruption class is KIT-0036/0043's).
+
+11. **Block-replacement hygiene**: after replacing a large text block, inspect what sits immediately ABOVE and BELOW the replaced span — decorators, comments, and staged-vs-disk state don't move with the block. Two artifacts in two tasks: a `skipif` decorator stranded on a helper function (pytest silently ignores it; consumer CI errors instead of skipping — KIT-0049) and an equivalent orphan in KIT-0048. One glance at the block's borders per replacement.
+
+12. **When two configuration axes meet a copy/generation step, enumerate the cells**: any code that copies, seeds, or generates content conditioned on one axis (shape, mode, profile) while another axis also varies must be asked "which combinations does this step actually distinguish, and which cells share a path?" — shared cells are where one axis silently masks the other (two of KIT-0053's real bot finds were this shape: the fresh-export reseed and the no-kit×materials contradiction). The `intersection_names_drops` mindset applied to axis products.
+
+13. **Identity renames must be chased through EVERY seeding path**: when a change renames identity-bearing content in a file that gets copied/seeded (pyproject name, package identifiers), grep every `cp`/`rsync`/heredoc that ships that file (`grep -rn '<filename>' scripts/`) and characterize EACH seeding path — not just the one the spec names. KIT-0057 fixed the `--new` export path and missed the adopt path's top-level copy in the same PR; one grep would have pre-empted the bot round.
+
+14. **After fixing any recurring token, grep for it REPO-WIDE — and in every representation**: the cousin of item 13 (mirror-guards family). Editing one occurrence of a stale name/model/claim and missing a sibling is the cheapest bot thread to prevent — one `grep -Rn '<token>' .` after the first edit. Two widenings earned the hard way:
+    - **Repo-wide, not just the file.** KIT-0065 fixed a GPT-4o mention at AGENT-CREATION-WORKFLOW.md:423 and missed the identical claim at :442 (same file). KIT-0069 then fixed `(347 lines)` in AGENT-TEMPLATE.md and missed the identical claim in AGENT-CREATION-WORKFLOW.md — a *different* file, which an in-file grep could never catch.
+    - **Every representation, not just prose.** A claim often exists three times in one document: as a sentence, inside a diagram, and in a table. KIT-0069 marked a parked CI trigger in three prose sites and left the Mermaid diagram, the ASCII diagram and the channel table asserting it was live. After fixing a claim, ask: is this also stated in a diagram, a table, help text, or a code comment? Those do not match a prose-shaped grep.
+    - **Every VARIANT of the token, not just the token.** Sweep `X.bak`, path-prefixed, basename-only, and reworded forms: KIT-0073's `adversarial/docs` citer grep passed while `.adversarial.bak/docs` survived in the very same file (BugBot caught it — the session's one regression, third face of grep-closes-a-token-not-a-class).
+
+15. **Cited a file, command, or version? Verify it exists / matches in THIS tree**: every path, subcommand, evaluator name, model ID, and version number you write or leave in place must be checked against the working tree before the diff closes — `ls` the path, grep the dispatch table for the subcommand, read the pin from its source of truth. The entire KIT-0069 prose cluster (~55 findings) is one violation class of this: docs citing `scripts/project` after v0.4.0, agents citing a template that moved, a command invoking an evaluator that ships nowhere, a coverage gate quoted at 53% when `pyproject.toml` says 80. A citation is a claim; unverified claims are how a doc silently becomes a trap.
+
+    **Two traps when verifying by grep in this repo:**
+    - `rg` skips hidden directories by default, and nearly every kit surface lives in one (`.kit/`, `.claude/`, `.adversarial/`, `.serena/`). A class grep without `--hidden` returns a *false all-clear*. During KIT-0069 this made a 20-site ghost-citation class look already-fixed.
+    - Even with `--hidden`, `rg` returned two more false-empties in the same session against patterns `grep -Rn` matched. **For class-closure evidence, use `grep -Rn`** — an under-reporting grep in a truth sweep is worse than no grep, because it manufactures false confidence.
+
+    **Remedies are citations too — EXECUTE a command before recommending it** (KIT-0069 T3, Major): a doc fix replaced destructive advice with advice that *does nothing* (`install-evaluators` returns early without `--force`). Paths and versions got verified relentlessly; the recommended command's behavior never did. Run it once, or trace its dispatch to the early-return, before the diff closes.
+
+    **When you edit a line to fix one false claim, verify EVERY claim on that line** (twice in KIT-0069): correcting one token while leaving a neighboring falsehood makes the citation read as freshly-verified — a partially-corrected line launders the surviving error. And a zero-hit token grep proves a *token* is gone, not a *class*: the same claim reworded (docstring vs print, comment vs table, prose vs Mermaid label) survives every pattern. Closing a class = token sweep + a read of every file you touched.
+
 ## Step 4: Test assertion audit
 
 Before checking boundary coverage, audit test assertion quality:
@@ -144,3 +174,5 @@ Key defensive patterns — consult before every self-review:
 | **Config value clamping** | After type-validating numeric config params, clamp to a max with `min(value, MAX)` before system calls | Unbounded timeout/retry from YAML passes isinstance() but exhausts resources |
 | **Path traversal sanitization** | When constructing paths from config/external names, sanitize with `Path(name).name` to strip dir components | `../../etc/passwd` escapes intended directory via path separators in evaluator/tool names |
 | **None in f-strings** | Before interpolating potentially-None values in f-strings, check for None explicitly | `f"{value}"` silently produces the string `"None"` — looks valid but misleading |
+| **Wrapper exit codes** | Wrapper failures never reuse an engine's reserved `0`/`1`; precondition failures exit `2`, source-acquisition/I/O failures `4` | Automation misreading a hard wrapper failure as engine success/drift |
+| **Scoped staging** | Commit helpers stage exact changed paths from a report/manifest, never `-A` / `.` / whole roots | Unrelated uncommitted work swept into automated sync commits |

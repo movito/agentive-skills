@@ -1,10 +1,10 @@
 ---
 description: How to run the adversarial code-review evaluator after bot rounds and before human review
 user-invocable: false
-version: 1.2.0
+version: 1.3.0
 origin: dispatch-kit
 origin-version: 0.3.2
-last-updated: 2026-04-23
+last-updated: 2026-07-05
 created-by: "@movito with planner2"
 ---
 
@@ -16,6 +16,35 @@ Run after bot triage rounds are complete, before human review. Uses a different 
 
 - After all bot threads are resolved (0 unresolved)
 - Before requesting human code review
+- **Exception — doc-heavy tasks run the evaluator BEFORE PR open** (see
+  "Ordering for Doc-Heavy Tasks" below)
+
+## Ordering: Run the Evaluator Trio Before PR Open (all tasks)
+
+**Recommendation (adopted KIT-0035 for doc-dominated; widened to ALL
+tasks 2026-07-14, KIT-0046 retro)**: run the evaluator trio **before**
+opening the PR, regardless of task type. Local tests must pass first —
+evaluate working code, not a draft — but do not wait for CI/bots.
+
+Why:
+
+- **KIT-0032**: each evaluator-driven rewrite after PR open triggered a
+  fresh bot round — four review rounds for a single documentation file.
+- **KIT-0033**: running the evaluator while CI was still pending worked
+  well — the two signals don't depend on each other.
+- **KIT-0040**: external-finding yield concentrates on freshly written
+  content; addressing trio findings before bots first see it is where
+  the round-saving is.
+- **KIT-0035 + KIT-0044** (doc-dominated): pre-open trio produced
+  zero-noise first bot rounds, twice.
+- **KIT-0046** (code-dominated — the widening evidence): all three
+  substantive round-1 bot findings were also evaluator findings. The
+  original "code-heavy keeps CI/bots first" carve-out predicted CI
+  would invalidate reviews; in practice local tests + pre-open trio
+  gets the same protection without burning bot rounds.
+
+The only remaining reason to defer the trio is when the diff genuinely
+cannot be assembled pre-PR (rare); say so in the review record.
 
 ## When to Skip
 
@@ -58,7 +87,7 @@ instead. They accept an input file and skip the guardrail.
 To produce the input, run the helper from the planning repo:
 
 ```bash
-./scripts/core/prepare-review-input.sh <TASK-ID>
+agentive review-input <TASK-ID>
 ```
 
 It auto-detects the target repo from `CLAUDE.md` (`## Target Repository`
@@ -78,13 +107,29 @@ cross-repo evaluator recipe.
 ### Cross-repo / automated path (preferred)
 
 ```bash
-./scripts/core/prepare-review-input.sh <TASK-ID>
+agentive review-input <TASK-ID>
 # Optional flags: --base <branch> (default main), --format diff|full (default full)
 ```
 
 This is the canonical path. It handles the diff extraction, the header
 block, and the full-file appendix in one step, and it works in both
 cross-repo and single-repo modes.
+
+**Choose `--format` by the SHAPE of the change, not by default**
+(KIT-0092 — third recorded case of input format distorting evaluator
+output, after the KIT-0069/KIT-0073 prose-sweep shutouts):
+
+- **Logic changes** (behavior, control flow, new code) → `full`: the
+  evaluators need surrounding context to judge correctness.
+- **Strings/docs-only changes** (renames, printed text, doc sweeps,
+  deletions) → `diff`: with `full`, evaluators review the WHOLE module
+  and return findings about unchanged code — noise that costs a
+  disposition round each. On KIT-0092, `--format full` made two of
+  three evaluators review entire modules for a strings-only diff.
+
+The pattern: trio value depends on input shape matching change shape.
+If a round returns mostly findings about code the diff never touched,
+the input format was wrong — re-run with `diff` before disposing.
 
 ### Manual path (special cases only)
 
@@ -119,6 +164,22 @@ Include:
 
 ## Step 2: Run the Evaluator
 
+### Discover installed evaluators first
+
+Availability varies per install, and v2 variants exist for some
+evaluators but not others (e.g. `code-reviewer-fast-v2` exists while
+`code-reviewer` has no v2). List what is actually installed before
+choosing:
+
+```bash
+adversarial list-evaluators
+# Fallback if the installed CLI predates list-evaluators:
+ls .adversarial/evaluators/*/
+```
+
+Prefer a `-v2` variant wherever one is installed; v1 names are
+deprecated in the evaluator library.
+
 ### Available evaluators
 
 | Command | Model | Focus | Cost | API Key Env Var |
@@ -133,9 +194,59 @@ add `claude-code` for security-sensitive code. Each model catches
 different classes of issues with minimal overlap (validated empirically
 across projects: distinct models surface largely non-overlapping findings).
 
-**Note**: `spec-compliance-fast` is NOT available — use manual spec checks or `/agentive-workflow:check-spec` (Gemini Flash via API) instead.
+**Note**: there is no spec-compliance evaluator, and there never was one
+in this library. It originated as a dispatch-kit project-local custom
+evaluator and did not survive the port into this kit, so
+`adversarial spec-compliance-fast` matches nothing — do not run it.
+`/agentive-workflow:check-spec` now performs a **manual** requirement-to-code trace instead
+of an evaluator call; use it for spec compliance. KIT-0072 tracks
+upstreaming the evaluator into the library, after which `/agentive-workflow:check-spec`
+becomes an evaluator call again and gains a row in the table above.
+
+**`claude-code` requires `ANTHROPIC_API_KEY` *uncommented* in `.env`.**
+A commented-out key does not error at launch — the evaluator fails
+mid-run (KIT-0032 hit this as a mid-session blocker: the trio ran 2-of-3
+until the operator uncommented the key). Verify before running the trio:
+`grep -qE '^ANTHROPIC_API_KEY=.+$' .env` must succeed — the `-q` keeps
+the secret off the transcript. Never add or commit a key — surface the
+gap to the operator instead.
 
 If the required API key is missing, fall back to another evaluator. If none of the keys are set, document the failure and proceed to human review.
+
+**Loading `.env` in unattended/worktree runs**: use the POSIX dot form
+inside `bash -c`, not the `source` keyword — the worktree-isolation
+permission hook can refuse `source`-in-command-string while the
+equivalent passes (KIT-0091):
+
+```bash
+bash -c 'set -a; . ./.env; set +a; adversarial <evaluator> <target>'
+```
+
+### Single-key (degraded) mode
+
+Not every project carries all three provider keys (KIT-0056, ADR-0027
+P5). With exactly ONE key available, the trio degrades to a documented
+mode — never a silent partial trio:
+
+1. Run the one evaluator your key supports (see the table above for
+   the key→evaluator mapping).
+2. Run the self-review checklist (the `agentive-workflow:self-review` skill)
+   in full — it substitutes for the missing models' breadth, not for
+   the one evaluator you can run.
+3. **NAME the mode in the persisted review record** (Step 4's
+   artifact). First line of the record, e.g.:
+
+   ```
+   Mode: degraded single-key (only GEMINI_API_KEY present) —
+   code-reviewer-fast only + self-review checklist; code-reviewer and
+   claude-code not run.
+   ```
+
+Gate 5 is unchanged: a review record is still required, and a degraded
+record that names its mode satisfies it. What is NOT acceptable is a
+record that looks like a full trio ran when it didn't — every degraded
+surface names its mode (the `intersection_names_drops` pattern applied
+to service presence).
 
 ```bash
 # Fast gate (every PR)
@@ -155,15 +266,29 @@ larger than ~700 lines and waits for stdin. In a non-TTY context (sub-agent,
 CI, automation), the prompt hangs indefinitely. Pipe `yes` in to bypass:
 
 ```bash
-yes y | adversarial code-reviewer-fast .adversarial/inputs/<TASK-ID>-code-review-input.md
+echo y | ADVERSARIAL_UNATTENDED=1 adversarial code-reviewer-fast .adversarial/inputs/<TASK-ID>-code-review-input.md
 ```
 
-The proper fix is a `--yes` (or `--no-confirm`) flag on the `adversarial`
-CLI itself — file an upstream issue if one isn't already open. Until then,
-the `yes y |` pipe is the unblocking workaround. ID2-0028 hit this when
-the file-based evaluator input ran past 700 lines.
+Belt-and-braces (final resolution 2026-07-17): multiple adversarial
+builds coexist all claiming the same version — PyPI builds read the
+piped `y` from stdin; the operator's editable dev build reads the
+`ADVERSARIAL_UNATTENDED` env flag and otherwise auto-cancels **with
+exit 0**. Use both; each is inert where unneeded. **Never trust exit 0
+alone** — a cancelled run also exits 0; the proof an evaluation ran is
+the log file existing with a verdict. Symptom→cause: "evaluation
+'succeeded' but no log verdict" = auto-cancelled non-TTY large input.
 
 ## Step 3: Read and Address Findings
+
+**First: run `git status` immediately after every evaluator invocation,
+before staging anything.** During KIT-0044, an evaluator running through
+a stale venv (adversarial-workflow 0.9.7, whose engine edited files
+in place) applied its suggested edit directly to a script mid-review.
+The root cause was fixed (venv upgraded to 1.0.1, whose engine never
+writes to the working tree), but the check stays as
+defense in depth: an unexpected working-tree change after a review run
+must be inspected and consciously kept or reverted — never silently
+swept into the next commit.
 
 Output lands in `.adversarial/logs/`, one file per evaluator:
 
@@ -179,11 +304,55 @@ cat .adversarial/logs/<TASK-ID>-code-review-input--claude-code.md
 | **CONCERNS** | Address test gaps and robustness issues, push |
 | **PASS** | Proceed to human review |
 
+> ⚠️ **Verdict vocabulary is per-evaluator, not library-wide** — do
+> not grep a single token across logs. Across the installed set
+> (v0.10.0, 25 verdict-declaring evaluators; measured, KIT-0069/A74):
+>
+> | Vocabulary | Evaluators | Examples |
+> |---|---|---|
+> | `APPROVED` / `NEEDS_REVISION` / `REJECT` | majority | `claude-adversarial`, `mistral-adversarial`, `gpt55-synthesis` |
+> | `APPROVED` / `REVISION_SUGGESTED` | several | `arch-review`, `arch-review-fast`, `mistral-arch` |
+> | `APPROVED` / `REJECT` (no middle) | several | `claude-code`, `gemini-code`, `gpt5-codex` |
+> | `PASS` / `CONCERNS` / `FAIL` | three | `code-reviewer`, `code-reviewer-fast(-v2)` |
+>
+> The recommended trio itself spans two vocabularies (`claude-code`
+> emits APPROVED/REJECT). **Read each log and interpret the verdict;
+> never pattern-match a fixed token.** To preview an evaluator's
+> vocabulary, grep its prompt text — `evaluator.yml` declares no
+> structured vocabulary field, so the bold uppercase tokens in the
+> prompt are the only mechanical signal (a heuristic: it can
+> over-match other bold caps; the read-the-log rule above is the
+> binding one):
+> `grep -o -E '\*\*[A-Z_]+\*\*' .adversarial/evaluators/<provider>/<name>/evaluator.yml | sort -u`
+
+## Oscillation protocol: disposition tables + the deep-round cap (KIT-0090)
+
+Deep evaluators can REVERSE their own instructions across rounds — on
+KIT-0090, o3 demanded a boundary block in round 4 and called that same
+block a regression in round 5, and forbade-then-demanded generic
+`ImportError` catching across PRs. Chasing a green verdict through
+oscillation loops forever. The named procedure:
+
+1. **Keep a per-PR disposition table** in the review record: every
+   finding → ACCEPTED (with the fix commit) or DECLINED (with the
+   repro/reason). Refuting a repeated or reversed finding then costs a
+   one-line citation of your own record, not a re-investigation.
+2. **Cap deep-evaluator rounds at ~2 per PR.** After two rounds,
+   further deep rounds show diminishing returns (both KIT-0090
+   oscillations occurred past that point). Stop, record the final
+   disposition of anything open, and cite the table in the PR body.
+   The cheap evaluator can keep running — cost≠signal (KIT-0084
+   insight): the fast tier finds real bugs without oscillating.
+3. A verdict below APPROVED with all findings dispositioned-and-cited
+   is a legitimate gate-pass; say so explicitly in the merge-go.
+
 ## Step 4: Persist Output
 
 Concatenate all evaluator outputs into a single review artifact tracked
 in git. Use the aggregation pattern (fail-fast when no logs match) so
-an empty review file can't silently mask evaluator failures:
+an empty review file can't silently mask evaluator failures. **The
+snippet is bash-only** (`shopt`): harness shells may be zsh — run it
+via `bash -c '…'` (KIT-0056 retro):
 
 ```bash
 shopt -s nullglob

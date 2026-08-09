@@ -1,10 +1,10 @@
 ---
 description: Check all 7 completion gates before requesting human review
 argument-hint: "[optional --pr PR_NUMBER --task TASK_ID --repo owner/name]"
-version: 1.1.0
+version: 1.3.0
 origin: dispatch-kit
 origin-version: 0.3.2
-last-updated: 2026-04-20
+last-updated: 2026-08-08
 created-by: "@movito with planner2"
 ---
 
@@ -14,7 +14,7 @@ Run all 7 completion gates and present a PASS/FAIL table.
 
 ## Cross-repo mode (automatic)
 
-`preflight-check.sh` auto-detects cross-repo mode from the
+`agentive preflight` auto-detects cross-repo mode from the
 `## Target Repository` section of `CLAUDE.md`. When configured:
 
 - Gates 1–4 (CI, bots, threads) query the target repo via `gh`.
@@ -26,36 +26,59 @@ Run all 7 completion gates and present a PASS/FAIL table.
 Override with `--repo owner/name` if needed:
 
 ```bash
-./scripts/core/preflight-check.sh --repo owner/name --pr PR_NUMBER
+agentive preflight --repo owner/name --pr PR_NUMBER
 ```
 
-## Step 1: Run the preflight script
+## Step 1: Run preflight
 
 ```bash
-./scripts/core/preflight-check.sh $ARGUMENTS
+agentive preflight $ARGUMENTS
 ```
 
-The script outputs structured `GATE:<number>:<name>:PASS|FAIL:<detail>` lines and exits 0 (all pass) or 1 (any fail).
+**Argument shape**: it takes named flags only — `--task <TASK-ID>
+--pr <N>` (plus optional `--repo owner/name`). A positional task ID
+(`agentive preflight KIT-0044 --pr 76`) fails with "Unknown argument"
+(KIT-0044 retro #4).
+
+Outputs structured `GATE:<number>:<name>:PASS|FAIL|PENDING|SKIP:<detail>` lines
+and exits 0 (all pass), 1 (any fail), or 2 (no failures, but at least one gate PENDING).
+
+**PENDING** (Gate 1 only, KIT-0034): CI runs are not yet registered for the head
+SHA, or are still executing — GitHub takes a few seconds to register runs after a
+push. PENDING is not a failure verdict; re-run preflight shortly (or use
+`/agentive-workflow:wait-for-bots` first) instead of treating it as a CI failure. Note: when
+no runs are registered yet, it re-polls briefly before reporting,
+so a preflight run may block for up to ~10 seconds.
 
 ## Step 2: Present results
 
-Parse the `GATE:` lines and format as a PASS/FAIL table:
+Parse the `GATE:` lines and format as a status table. Preserve the status
+it emitted — do not collapse `PENDING` or `SKIP` into `FAIL`. Only
+the gates below can emit more than PASS/FAIL:
 
 | # | Gate | Status | Detail |
 |---|------|--------|--------|
-| 1 | CI green | PASS/FAIL | [workflow status] |
-| 2 | CodeRabbit reviewed | PASS/FAIL | [review state on latest commit] |
-| 3 | BugBot reviewed | PASS/FAIL | [review state on latest commit] |
+| 1 | CI green | PASS/FAIL/PENDING | [workflow status] |
+| 2 | CodeRabbit reviewed | PASS/FAIL/SKIP | [review state on latest commit] |
+| 3 | BugBot reviewed | PASS/FAIL/SKIP | [review state on latest commit] |
 | 4 | Zero unresolved threads | PASS/FAIL | [N fresh unresolved, N lingering unresolved] |
 | 5 | Evaluator review persisted | PASS/FAIL | [file path or "missing"] |
 | 6 | Review starter exists | PASS/FAIL | [file path or "missing"] |
 | 7 | Task in correct folder | PASS/FAIL | [folder/file] |
 
+`SKIP` means the gate does not apply (a `bots:` declaration says the bot is
+absent — KIT-0056) and **counts as satisfied**; the "wait for the bot"
+remedies below do not apply to it. `PENDING` means not yet determined —
+neither pass nor fail.
+
 ### Verdict
 
 - If all 7 pass: **READY** — proceed with review handoff (move to `4-in-review`, notify user)
+- If no gate fails but one is PENDING: **NOT READY YET (pending)** — wait briefly
+  and re-run preflight; do not report a CI failure
 - If any fail: **NOT READY (N gates failing)** — list prescriptive actions for each failing gate:
   - Gate 1 fails: "Run `/agentive-workflow:check-ci` and fix failures"
+  - Gate 1 PENDING: "CI not registered/still running — re-run preflight in a minute"
   - Gate 2 fails: "Wait for CodeRabbit (1-2 min) or run `/agentive-workflow:check-bots`"
   - Gate 3 fails: "Wait for BugBot (4-6 min) or run `/agentive-workflow:check-bots`"
   - Gate 4 fails: "Run `/agentive-workflow:triage-threads` to resolve open threads" — but first
@@ -85,7 +108,7 @@ How to tell them apart:
 LATEST_PUSH=$(git rev-parse @{push} 2>/dev/null || git rev-parse HEAD)
 
 # List threads with the commit SHA they were opened on
-./scripts/core/gh-review-helper.sh threads {pr_number}
+agentive review-helper threads {pr_number}
 # Cross-reference each thread's original commit against LATEST_PUSH:
 #   - opened on LATEST_PUSH itself → fresh
 #   - opened on an ancestor of LATEST_PUSH → lingering
@@ -95,8 +118,8 @@ LATEST_PUSH=$(git rev-parse @{push} 2>/dev/null || git rev-parse HEAD)
 ```
 
 **Rule of thumb**: fresh threads block completion; lingering threads need a
-stale-verification pass but are not a blocker if confirmed stale. The preflight
-script may report them as a single count — you must still triage the split
+stale-verification pass but are not a blocker if confirmed stale. Preflight
+may report them as a single count — you must still triage the split
 manually when Gate 4 fails. If `@{push}` is unset (no upstream yet) or the
 classification is otherwise ambiguous, default to treating everything as
 fresh — it's cheaper to triage once more than to ship with an unaddressed

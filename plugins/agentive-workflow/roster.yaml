@@ -1,0 +1,295 @@
+# roster.yaml — agentive-workflow component roster (introduced in 2.0.0, KIT-0096)
+#
+# The deliberate ships/kit-side decision record for every component in the
+# upstream kit's canonical `.claude/` tree, plus retired plugin components.
+# It is ALSO the comparison input for the kit repo's CI drift guard, which
+# recomputes each shipped entry's kit-source hash and FAILS when the kit is
+# newer than this (the last published) release.
+#
+# Fields per entry:
+#   name:        component name (file basename without .md)
+#   kind:        agent | command | skill
+#   ships:       true = distributed in this plugin; false = stays kit-side
+#   source:      canonical file path in the upstream kit repo
+#                (movito/agentive-starter-kit); absent for retired entries
+#   why:         one-line rationale for the ships/kit-side/retired decision
+#   kit_version: the kit source's `version:` frontmatter at release time
+#                (shipped entries only)
+#   kit_sha256:  sha256 of the kit source file at release time (shipped
+#                entries only) — the drift guard's anchor. The plugin copy
+#                intentionally differs (generalization per KIT-ADR-0025);
+#                the hash pins the KIT file the copy was derived from.
+#   retired:     true for components removed from the plugin in this release
+#
+# Machine consumers: parse with any YAML loader. Update this file in the
+# same commit as any component refresh — the drift guard treats a stale
+# roster exactly like stale content (FAIL).
+
+plugin: agentive-workflow
+plugin_version: "2.0.0"
+kit_repo: movito/agentive-starter-kit
+components:
+  - name: feature-developer
+    kind: agent
+    ships: true
+    source: .claude/agents/feature-developer.md
+    kit_version: "2.1.1"
+    kit_sha256: 42745aa6ebe51aca38c00a007b4aca2fc6a4eb7fd62b120512ff385b9ce1a48e
+    why: >-
+      canonical gated implementation agent — the plugin's core
+  - name: feature-developer-f5
+    kind: agent
+    ships: true
+    source: .claude/agents/feature-developer-f5.md
+    kit_version: "1.1.0"
+    kit_sha256: f28ffe71f985850bec1804b4ab26501beb0420ce9170ecad99c197238b3edf4c
+    why: >-
+      Fable-class variant; separate file because the model: pin is frontmatter (KIT-ADR-0025 §3)
+  - name: planner
+    kind: agent
+    ships: true
+    source: .claude/agents/planner.md
+    kit_version: "2.0.0"
+    kit_sha256: 4a6d838ac2f37b50ea27f8b503a3a997eea771e5f2edef4a680018307584e9f9
+    why: >-
+      planning/coordination agent; the plugin is THE agent channel (KIT-ADR-0028) — 1.x shipping no planner triggered this release
+  - name: planner-f5
+    kind: agent
+    ships: true
+    source: .claude/agents/planner-f5.md
+    kit_version: "1.0.0"
+    kit_sha256: 905fa758fd56e281ef5b4513d68c63a35385c6b7d9e59302fba6d6fa923fd124
+    why: >-
+      Fable-class planner variant; same frontmatter-pin rationale as feature-developer-f5
+  - name: ci-checker
+    kind: agent
+    ships: true
+    source: .claude/agents/ci-checker.md
+    kit_version: "1.0.0"
+    kit_sha256: b1b1def0da50e19ef88af2016ad0c800df9818d210fba725fa1289bd51600ae6
+    why: >-
+      consumer-facing CI verification; shipped since 1.0
+  - name: code-reviewer
+    kind: agent
+    ships: true
+    source: .claude/agents/code-reviewer.md
+    kit_version: "1.1.0"
+    kit_sha256: 8b4d994f05fd15ff350d37e529adbefb0f55fc2c15c23089d5ab87b2a15ad87a
+    why: >-
+      consumer-facing implementation review; shipped since 1.0
+  - name: test-runner
+    kind: agent
+    ships: true
+    source: .claude/agents/test-runner.md
+    kit_version: "1.0.0"
+    kit_sha256: 0d63d4f26d6f1ad6fae135d52e04d0724662f550984634e3e352868da45b78d1
+    why: >-
+      consumer-facing TDD/QA agent; generic once Serena activation is de-hardcoded
+  - name: document-reviewer
+    kind: agent
+    ships: true
+    source: .claude/agents/document-reviewer.md
+    kit_version: "1.0.0"
+    kit_sha256: 6ce17c13b3f3e998abbd3c2299a0bb5203df72421eab18b5c6baf2b9e050eb34
+    why: >-
+      generic documentation review; no kit machinery in the body
+  - name: security-reviewer
+    kind: agent
+    ships: true
+    source: .claude/agents/security-reviewer.md
+    kit_version: "1.0.0"
+    kit_sha256: a814ae154af2aac33554a707114402e54fe78bdda08604bb3fc99c0f277ec3d1
+    why: >-
+      generic security review; no kit machinery in the body
+  - name: upgrader
+    kind: agent
+    ships: true
+    source: .claude/agents/upgrader.md
+    kit_version: "1.1.0"
+    kit_sha256: 421cbc92fdbf56a032c310764be9ce0b53dcc4b9a6079bc62d3694ac279a7d3d
+    why: >-
+      consumer-facing by design — moves consuming projects between plugin versions
+  - name: bootstrap
+    kind: agent
+    ships: false
+    source: .claude/agents/bootstrap.md
+    why: >-
+      interviewer for the kit-side setup door (scripts/local/bootstrap); the door does not ship
+  - name: project-intake
+    kind: agent
+    ships: false
+    source: .claude/agents/project-intake.md
+    why: >-
+      runs FROM a kit checkout by its own header; composes the kit-side door
+  - name: agent-creator
+    kind: agent
+    ships: false
+    source: .claude/agents/agent-creator.md
+    why: >-
+      drives kit templates (.kit/templates/) and scripts/optional/create-agent.sh — kit machinery
+  - name: powertest-runner
+    kind: agent
+    ships: false
+    source: .claude/agents/powertest-runner.md
+    why: >-
+      kit-internal deep-verification superset of test-runner; consumers get test-runner
+  - name: feature-developer-v6
+    kind: agent
+    ships: false
+    retired: true
+    why: >-
+      retired in 2.0.0 — superseded by feature-developer (Opus-class canonical)
+  - name: feature-developer-v7
+    kind: agent
+    ships: false
+    retired: true
+    why: >-
+      retired in 2.0.0 — superseded by feature-developer-f5 (Fable-class variant)
+  - name: babysit-pr
+    kind: command
+    ships: true
+    source: .claude/commands/babysit-pr.md
+    kit_version: "1.0.0"
+    kit_sha256: 9621f92d599d82b112ff96e92c44d01fbad6229aafc9b6a5051774905eeb2352
+    why: >-
+      cross-repo-aware workflow command; shipped since 1.0 generation
+  - name: check-bots
+    kind: command
+    ships: true
+    source: .claude/commands/check-bots.md
+    kit_version: "1.1.0"
+    kit_sha256: 832db14575c1a3800908a2fbcf433ab5ff73176a104f29e2f9892a33a1b8f04c
+    why: >-
+      cross-repo-aware workflow command; shipped since 1.0 generation
+  - name: check-ci
+    kind: command
+    ships: true
+    source: .claude/commands/check-ci.md
+    kit_version: "1.1.0"
+    kit_sha256: 20f9c6f9e1bcdeca154d4db84c3962b34d9ae16b75efe2bdb6679efcd41e9f3c
+    why: >-
+      cross-repo-aware workflow command; shipped since 1.0 generation
+  - name: check-spec
+    kind: command
+    ships: true
+    source: .claude/commands/check-spec.md
+    kit_version: "1.1.0"
+    kit_sha256: 7e3ba81ebcceb0a55a0eab2d175fc6c754aed7fd1b7894e2a190ae09eeb319ab
+    why: >-
+      cross-repo-aware workflow command; shipped since 1.0 generation
+  - name: commit-push-pr
+    kind: command
+    ships: true
+    source: .claude/commands/commit-push-pr.md
+    kit_version: "1.0.0"
+    kit_sha256: 6a1e6d48f4a090d11f41c7e2f20e4af85d4e0da82190a11ea04460ac98f73241
+    why: >-
+      cross-repo-aware workflow command; shipped since 1.0 generation
+  - name: preflight
+    kind: command
+    ships: true
+    source: .claude/commands/preflight.md
+    kit_version: "1.3.0"
+    kit_sha256: 56f3c73685c3b6f9777247ce3cbc56b17cf7ece943e997eb08845b3addf29177
+    why: >-
+      cross-repo-aware workflow command; shipped since 1.0 generation
+  - name: retro
+    kind: command
+    ships: true
+    source: .claude/commands/retro.md
+    kit_version: "1.1.0"
+    kit_sha256: 33ca46c9da43920d9f5860b81defcc6afb20924ee4ccefac103469b4e489fc55
+    why: >-
+      cross-repo-aware workflow command; shipped since 1.0 generation
+  - name: start-task
+    kind: command
+    ships: true
+    source: .claude/commands/start-task.md
+    kit_version: "1.0.0"
+    kit_sha256: 10d698e88c0b8b7fc57befd80a4a0e23d7c9bdbb575a6fabc248339b4cebfd4a
+    why: >-
+      cross-repo-aware workflow command; shipped since 1.0 generation
+  - name: status
+    kind: command
+    ships: true
+    source: .claude/commands/status.md
+    kit_version: "1.0.0"
+    kit_sha256: 8a03e61808cfaa38d3319a6ed0c01e96e007acc576837a72fed042236ac8a963
+    why: >-
+      cross-repo-aware workflow command; shipped since 1.0 generation
+  - name: triage-threads
+    kind: command
+    ships: true
+    source: .claude/commands/triage-threads.md
+    kit_version: "1.1.0"
+    kit_sha256: 27d96099a0c3d8538f5a9f797fbc9e1148477ac1ae3cdd1734339c24eb2852f4
+    why: >-
+      cross-repo-aware workflow command; shipped since 1.0 generation
+  - name: wait-for-bots
+    kind: command
+    ships: true
+    source: .claude/commands/wait-for-bots.md
+    kit_version: "1.0.0"
+    kit_sha256: 32e76a94687289bd0efe9764e677738f984fe51c57cb558d2d1fd0020fe151d4
+    why: >-
+      cross-repo-aware workflow command; shipped since 1.0 generation
+  - name: wrap-up
+    kind: command
+    ships: true
+    source: .claude/commands/wrap-up.md
+    kit_version: "2.0.0"
+    kit_sha256: c161474a121816d72f1103e1e99838c471153d569b5bbb8bbb0668c382c9f80f
+    why: >-
+      cross-repo-aware workflow command; shipped since 1.0 generation
+  - name: new-project
+    kind: command
+    ships: false
+    source: .claude/commands/new-project.md
+    why: >-
+      drives the kit-side setup door; runs from a kit checkout
+  - name: setup-preset
+    kind: command
+    ships: false
+    source: .claude/commands/setup-preset.md
+    why: >-
+      authors setup-door presets; the door is kit-side only
+  - name: bot-triage
+    kind: skill
+    ships: true
+    source: .claude/skills/bot-triage/SKILL.md
+    kit_version: "1.1.0"
+    kit_sha256: fab4516d679a1fa2963be6da482ac9fc61ad4711c6844827034ad27c59cc0ccc
+    why: >-
+      workflow skill consumed by the shipped agents and commands
+  - name: code-review-evaluator
+    kind: skill
+    ships: true
+    source: .claude/skills/code-review-evaluator/SKILL.md
+    kit_version: "1.3.0"
+    kit_sha256: b2846ee662c59238378b8c0943a1e09560436f6429c38fc659b8034d21ae980e
+    why: >-
+      workflow skill consumed by the shipped agents and commands
+  - name: pre-implementation
+    kind: skill
+    ships: true
+    source: .claude/skills/pre-implementation/SKILL.md
+    kit_version: "1.2.0"
+    kit_sha256: 44e476834159acef658ad53536ef9e867dd8198c034a9a0fa1a89c01ff0d8cd7
+    why: >-
+      workflow skill consumed by the shipped agents and commands
+  - name: review-handoff
+    kind: skill
+    ships: true
+    source: .claude/skills/review-handoff/SKILL.md
+    kit_version: "1.1.0"
+    kit_sha256: 69411cde85ee5d8357884bf4a0a67104be60fa7c4dc1f3887282a4e5a11b7f01
+    why: >-
+      workflow skill consumed by the shipped agents and commands
+  - name: self-review
+    kind: skill
+    ships: true
+    source: .claude/skills/self-review/SKILL.md
+    kit_version: "1.2.0"
+    kit_sha256: 20c14489f6cdae0c59803f44e27eef011682fb627b3feaeb29e77407d68bcb05
+    why: >-
+      workflow skill consumed by the shipped agents and commands
