@@ -18,6 +18,19 @@ No roster membership changes, no renames, no removals — every component
 that shipped in 2.0.0 ships in 2.0.1. Consuming projects need no
 reference reconcile; `claude plugin update` is sufficient.
 
+### Added
+
+- Nothing. No new components in this release.
+
+### Removed
+
+- Nothing. No components retired in this release.
+
+### Renamed
+
+- Nothing. No component renames in this release; no reference reconcile
+  is required in consuming projects.
+
 ### Fixed
 
 - **Evaluator ordering contradiction (`feature-developer`,
