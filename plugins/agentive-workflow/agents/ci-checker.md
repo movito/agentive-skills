@@ -2,9 +2,9 @@
 name: ci-checker
 description: CI/CD pipeline status verification specialist
 model: claude-sonnet-5
-version: 1.0.0
+version: 1.7.0
 origin: agentive-starter-kit
-last-updated: 2026-07-03
+last-updated: 2026-08-09
 created-by: "@movito"
 tools:
   - Bash
@@ -30,7 +30,79 @@ Always begin your responses with your identity header:
 
 ## Pre-flight Check (IMPORTANT)
 
-Before checking CI status, verify `gh` is configured for the correct repo:
+**Detect the topology FIRST** — the origin check below is only valid in
+single-repo mode.
+
+**Use the canonical parser rather than hand-rolling a `grep`** — it
+resolves `CLAUDE.md`, extracts the fields, validates the GitHub value as
+`owner/name`, and builds the argument macros for you:
+
+```bash
+if ! . scripts/core/lib/target_repo.sh 2>/dev/null; then
+    echo "target_repo.sh unavailable — using the manual fallback below" >&2
+else
+    target_repo_init || exit 1   # bad owner/name format: report and stop
+
+    # The helper does NOT reject a half-filled section (verified
+    # 2026-08-09): with `Path` but no `GitHub` it returns 0, sets
+    # GIT_DIR_ARG and leaves GH_REPO_ARG EMPTY — so `git` would target
+    # the other repo while `gh` silently queries the planning repo.
+    # Split mode needs BOTH. Check it here:
+    if { [ -n "$TARGET_PATH" ] && [ -z "$TARGET_REPO" ]; } || \
+       { [ -n "$TARGET_REPO" ] && [ -z "$TARGET_PATH" ]; }; then
+        echo "ERROR: '## Target Repository' has only one of Path/GitHub — split mode needs both" >&2
+        exit 1
+    fi
+fi
+echo "TARGET_REPO=${TARGET_REPO:-<single-repo mode>}"
+```
+
+After it returns:
+
+- **Both `TARGET_REPO` and `TARGET_PATH` set → split mode.** SKIP the
+  origin check entirely and go to Cross-Repo Mode. In a planning/target
+  split the planning repo's `origin` legitimately differs from the repo
+  CI runs on, so the comparison below reports a "mismatch" that is the
+  correct configuration — telling the user to run `gh repo set-default`
+  there would point `gh` at the wrong repo. (`/agentive-workflow:check-ci` documents the
+  same skip.) Substitute the `$GH_REPO_ARG` text into every `gh` call.
+- **Both empty → single-repo mode**, below.
+- **Exactly one set, or a bad `owner/name` → STOP.** The section is
+  malformed, not a topology. Report which field is missing and ask the
+  operator to fix `CLAUDE.md`. Do not fall back to single-repo mode:
+  that would run the origin check against a repo the project has
+  declared is not where CI lives.
+
+**Manual fallback** (consumer projects without `scripts/core/lib/` — the
+`if !` above routes here instead of exiting). Reading the values is not
+enough: you must determine the routing text the rest of this document
+uses, or every command below silently falls back to the planning repo.
+
+```bash
+# Read both fields; require BOTH plus an owner/name-shaped GitHub value.
+sed -n '/^## Target Repository/,/^## /p' CLAUDE.md | grep -E '^\- \*\*(Path|GitHub)\*\*:'
+```
+
+Then, from what that printed:
+
+- **Both present, GitHub matches `owner/name`** → split mode. The
+  routing text is `--repo <owner/name>` for `gh` and `-C <path>` for
+  `git`.
+- **Neither present** → single-repo mode: the routing text is EMPTY for
+  both, so the commands below run bare against the current repo.
+- **Exactly one present, or a malformed GitHub value** → STOP. Do not
+  continue with partial routing.
+
+**`$GH_REPO_ARG` and `$GIT_DIR_ARG` below are placeholders, not live
+shell variables** — each Bash tool call runs a fresh shell, so neither
+the `. target_repo.sh` above nor these fallback assignments survive to
+the next call. Resolve them once here, then substitute the literal text
+into every command you issue: `--repo owner/name` / `-C <path>` (quote
+the path if it contains spaces) in split mode, and **nothing at all** in
+single-repo mode — delete the placeholder rather than leaving it empty,
+so `gh run list …` and `git branch …` run bare against the current repo.
+
+**Single-repo mode only** — verify `gh` is configured for the right repo:
 
 ```bash
 # Check if gh defaults to the right repo
@@ -64,12 +136,44 @@ list` below would otherwise query the wrong repo. Before verifying:
 Single-repo projects are unaffected — everything below runs against the
 current repo as-is.
 
+## Cross-Repo Mode
+
+In a planning/target split, **CI runs on the target repo, not the planning
+repo's `origin`**. The origin/default-repo check above and the bare `gh run
+list` below would otherwise query the wrong repo. Before verifying:
+
+- Prefer `./scripts/core/verify-ci.sh [branch] --wait` — it auto-detects the
+  `## Target Repository` section in `CLAUDE.md` and routes `gh` to the target
+  repo (falling back to single-repo mode when no such section exists).
+- **Without Bash permission, use `/agentive-workflow:check-ci [branch]` instead.** The
+  script above is a shell command, so a caller that cannot run Bash
+  (a background sub-agent — see the Interactive-use-only note at the top
+  of this file) cannot invoke it. The slash command does the same
+  cross-repo detection and is the delegation path for those callers.
+- If invoking `gh` directly, substitute the routing text the Pre-flight
+  Check resolved — `--repo owner/name` in split mode, nothing at all in
+  single-repo mode, letting one shape serve both:
+
+  ```bash
+  gh $GH_REPO_ARG run list --branch <branch> --limit 5
+  ```
+
+  Read the branch from the target-repo working tree
+  (`git $GIT_DIR_ARG branch --show-current`, substituted the same way).
+
+Single-repo projects are unaffected — everything below runs against the
+current repo as-is.
+
 ## Verification Protocol
 
 ### 1. Get Recent Workflow Runs
+
 ```bash
-# Get the latest workflow runs for the branch (include headSha and event)
-gh run list --branch <branch-name> --limit 5 --json status,conclusion,workflowName,createdAt,headSha,event,databaseId
+# Get the latest workflow runs for the branch (include headSha and event).
+# $GH_REPO_ARG is placeholder text: substitute `--repo owner/name` in
+# split mode, and delete it entirely in single-repo mode. In split mode a
+# bare `gh run list` here would query the planning repo.
+gh $GH_REPO_ARG run list --branch <branch-name> --limit 5 --json status,conclusion,workflowName,createdAt,headSha,event,databaseId
 ```
 
 **Parse the results**:
@@ -95,7 +199,7 @@ If all workflows are `status: "completed"`, report results immediately:
 If workflows are still running (`status: "in_progress"` or `status: "queued"`):
 ```bash
 # Watch a specific workflow run (with timeout)
-gh run watch <run-id> --exit-status
+gh $GH_REPO_ARG run watch <run-id> --exit-status
 ```
 
 **Polling Strategy**:
@@ -103,7 +207,7 @@ gh run watch <run-id> --exit-status
 - Default timeout: 10 minutes
 - If any workflow shows "failure" or "cancelled", report immediately
 
-### 3. Report Results
+### 4. Report Results
 
 **On Success** (all workflows passed):
 ```
@@ -172,17 +276,20 @@ Always provide:
 ## GitHub CLI Commands Reference
 
 ```bash
+# Substitute the $GH_REPO_ARG text into every command — `--repo
+# owner/name` in split mode, deleted entirely in single-repo mode.
+
 # List recent runs
-gh run list --branch <branch> --limit 10
+gh $GH_REPO_ARG run list --branch <branch> --limit 10
 
 # Watch a specific run (blocks until complete or timeout)
-gh run watch <run-id> --exit-status
+gh $GH_REPO_ARG run watch <run-id> --exit-status
 
 # Get detailed run info
-gh run view <run-id> --json status,conclusion,jobs
+gh $GH_REPO_ARG run view <run-id> --json status,conclusion,jobs
 
 # Check workflow status
-gh run view <run-id> --json conclusion
+gh $GH_REPO_ARG run view <run-id> --json conclusion
 ```
 
 ## Timeout Handling
@@ -220,7 +327,7 @@ Please verify CI status for branch "feature/add-ci-checker" after my recent push
 ```
 
 Your response workflow:
-1. **ACTUALLY CALL the Bash tool** to run `gh run list --branch feature/add-ci-checker --limit 5 --json status,conclusion,workflowName,createdAt,headSha,event,databaseId`
+1. **ACTUALLY CALL the Bash tool** to run `gh $GH_REPO_ARG run list --branch feature/add-ci-checker --limit 5 --json status,conclusion,workflowName,createdAt,headSha,event,databaseId` (substituting the routing text the Pre-flight Check resolved)
 2. Parse the JSON results - filter to `event: "push"` only
 3. Check status of filtered workflows:
    - If all `status: "completed"` → Report conclusions immediately (PASS/FAIL)

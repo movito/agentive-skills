@@ -5,6 +5,70 @@ All notable changes to the `agentive-workflow` plugin. Format follows
 The upgrader agent fetches this file to compute the reconcile diff for
 consuming projects — keep Added/Removed/Renamed explicit per release.
 
+## [2.0.1] — 2026-08-10
+
+Patch sync. Content-only refresh of 17 components from the upstream kit
+(agentive-starter-kit, KIT-0099), carrying the fixes that the 2.0.0
+review itself produced: the 21 findings from movito/agentive-skills#4
+were fixed in the kit's canonical tree (KIT-0097), then given a
+fresh-eyes coherence repair (KIT-0098), per the fix-here-then-release
+contract in KIT-ADR-0028.
+
+No roster membership changes, no renames, no removals — every component
+that shipped in 2.0.0 ships in 2.0.1. Consuming projects need no
+reference reconcile; `claude plugin update` is sufficient.
+
+### Fixed
+
+- **Evaluator ordering contradiction (`feature-developer`,
+  `feature-developer-f5`)** — the Workflow Overview table and task-flow
+  line placed the Evaluator gate *after* CI+Bots, contradicting the
+  pre-PR-open trio rule the same body mandates. Phases renumbered
+  (Evaluator 5, Ship 6, CI+Bots 7) and the section physically moved.
+- **Instructions that contradicted an agent's own tool grant
+  (`document-reviewer`, `security-reviewer`)** — both declare
+  themselves read-only and are granted no Bash or Write, while the body
+  mandated push-and-verify-CI. The CI block is now "not yours to run",
+  with the delegation route named.
+- **Stale and unsafe command recipes (`feature-developer` pair)** — the
+  evaluator step probed for helper scripts removed in KIT-0091 and used
+  a raw `git diff`; it now uses the canonical `agentive review-input`,
+  requires a committed tree first (uncommitted work is invisible to the
+  diff), and picks `--format` by change shape.
+- **Split-mode path correctness (`feature-developer` pair,
+  `ci-checker`)** — planning-repo commands used relative paths that
+  resolve against the *target* worktree in a cross-repo session;
+  the planning root is now derived once and routed through explicitly.
+  `ci-checker` detects topology before the origin/default-repo check,
+  which is legitimately skipped in split mode.
+- **Upgrade/rollback correctness (`upgrader`)** — version resolution no
+  longer fetches `ref=main` for a target version's CHANGELOG or
+  blind-prefixes `v` on 404; and rollback no longer assumes
+  `claude plugin update` can move backwards (it resolves
+  marketplace-latest), restoring from cache and verifying via
+  `claude plugin list` instead.
+- **Hardcodes that leak one project into every project
+  (`code-reviewer`, `test-runner`, `document-reviewer`,
+  `security-reviewer`)** — `/check-ci main` verified the base branch
+  rather than the change; Serena activation and example task IDs named
+  a specific downstream project. Now de-hardcoded upstream, so the kit
+  and the distributed copies finally agree.
+- **Lifecycle discipline (`code-reviewer` and peers)** — `project
+  start` was an unconditional first action; it is now conditional on
+  task status and session topology, mirroring the feature-developer
+  verify-never-create contract.
+
+### Changed
+
+- **Handoff conventions (`planner`, `planner-f5`)** — bot presence or
+  absence on a repo is an environmental claim: cite the query or write
+  UNVERIFIED. (The 2.0.0 handoff asserted "no bots" on the marketplace
+  repo unverified; 23 review threads arrived on a PR planned around
+  having none.)
+- **`roster.yaml`** — `plugin_version` 2.0.1 and refreshed
+  `kit_version`/`kit_sha256` for the 17 resynced components. Membership
+  is byte-identical to 2.0.0. This turns the kit's CI drift guard green.
+
 ## [2.0.0] — 2026-08-09
 
 Content refresh from the upstream kit's canonical `.claude/` tree
