@@ -5,6 +5,68 @@ All notable changes to the `agentive-workflow` plugin. Format follows
 The upgrader agent fetches this file to compute the reconcile diff for
 consuming projects — keep Added/Removed/Renamed explicit per release.
 
+## [2.0.2] — 2026-08-11
+
+Patch sync. Six components refreshed from the upstream kit
+(agentive-starter-kit, KIT-0100), carrying the advisory defects that the
+2.0.1 release review surfaced — fixed in kit canon first, then released,
+per KIT-ADR-0028.
+
+### Added
+
+- Nothing. No new components in this release.
+
+### Removed
+
+- Nothing. No components retired in this release.
+
+### Renamed
+
+- Nothing. No component renames in this release; no reference reconcile
+  is required in consuming projects.
+
+### Fixed
+
+- **Unenforceable CI watch timeout (`ci-checker`)** — the agent
+  documented a 10-minute watch limit while calling `gh run watch`, which
+  has no duration flag at all (only `--interval`), so nothing bounded the
+  call and a hung run could block indefinitely. Watch commands are now
+  wrapped in a resolved supervisor, with three exit codes kept distinct:
+  **124** timeout, **127** supervisor not installed (nothing was
+  watched — never report it as a CI result), anything else a genuine
+  failure. Resolve `timeout` vs `gtimeout` once (macOS ships the latter)
+  and substitute it everywhere, alongside the existing repo-routing
+  placeholder.
+- **CI retrigger could ship unrelated staged work (`check-ci`)** —
+  `git commit --allow-empty` *permits* an empty commit; it does not
+  *make* one, so a retrigger run against a dirty index silently
+  committed whatever happened to be staged under the message "chore:
+  retrigger CI". Now uses `--allow-empty --only`, which commits exactly
+  the named paths and therefore, with none named, nothing at all: the
+  retrigger commit is structurally incapable of carrying staged work.
+  Split-mode paths are quoted so a path containing spaces cannot split
+  into multiple arguments.
+- **Evaluator fallback could escalate past its tier
+  (`code-review-evaluator`)** — "if the required API key is missing,
+  fall back to another evaluator" allowed a prose-shaped review to reach
+  the expensive deep tier through the degraded path, by accident rather
+  than by decision. Fallback is now sideways-within-tier only; upward is
+  a blocked gate.
+- **Evaluator trio read as unconditional (`feature-developer`,
+  `feature-developer-f5`)** — the three commands were listed with no
+  visible branch, several paragraphs below the rule that selects among
+  them, so the tier rule was easy to miss. The block now branches
+  explicitly, and a mixed diff (any hunk changing behavior) resolves to
+  logic-shaped.
+- **Stale phase cross-references (`feature-developer`,
+  `feature-developer-f5`)** — two "see Phase 6" references still pointed
+  at the pre-2.0.1 numbering, where CI polling is now Phase 7.
+- **`wrap-up` printed an unverified path** — the summary always printed
+  a task-specific review-starter path, while the check behind it was a
+  repo-wide glob that could match a *different* task's file. The check is
+  now task-specific and the line reports `NOT FOUND` when absent, the
+  same treatment the command already applied to its retro line.
+
 ## [2.0.1] — 2026-08-10
 
 Patch sync. Content-only refresh of 17 components from the upstream kit

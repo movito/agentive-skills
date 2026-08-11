@@ -11,7 +11,7 @@ Anything committed here, including release metadata, is visible to anyone.
 
 ## What's inside
 
-One plugin, `agentive-workflow` (2.0.1). Every component is namespaced
+One plugin, `agentive-workflow` (2.0.2). Every component is namespaced
 `agentive-workflow:<name>` when the plugin is enabled (e.g. `/agentive-workflow:preflight`,
 `Agent(subagent_type="agentive-workflow:feature-developer")`).
 
