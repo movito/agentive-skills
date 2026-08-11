@@ -4,6 +4,11 @@ Generated 2026-05-21. Canonical source: `movito/ixda-services-2.0`. Token used f
 read-only, so the steps below that create/modify repos need a token (or `gh auth login`) with
 **Contents: write** and, for the PR approach, **Pull requests: write**.
 
+> **Historical record — not current state.** This runbook describes the original
+> rollout, when the marketplace was planned as a private repo. `movito/agentive-skills`
+> is now **public**; see `README.md`. Kept as written for provenance — do not read the
+> "private repo" steps below as current guidance.
+
 ## Phase 1 — Publish the marketplace repo (once)
 
 The scaffolded repo is in `agentive-skills/`. Create the private GitHub repo and push it:

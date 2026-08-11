@@ -78,7 +78,7 @@ installed (`uv tool install agentive-kit`).
 ## Use it in a project
 
 ```sh
-# add this private marketplace (uses your GitHub credentials)
+# add this marketplace
 /plugin marketplace add movito/agentive-skills
 # install the plugin
 /plugin install agentive-workflow@agentive-skills
