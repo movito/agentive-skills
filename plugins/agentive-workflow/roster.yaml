@@ -26,7 +26,7 @@
 # roster exactly like stale content (FAIL).
 
 plugin: agentive-workflow
-plugin_version: "2.0.2"
+plugin_version: "2.0.3"
 kit_repo: movito/agentive-starter-kit
 components:
   - name: feature-developer
@@ -49,16 +49,16 @@ components:
     kind: agent
     ships: true
     source: .claude/agents/planner.md
-    kit_version: "2.0.0"
-    kit_sha256: 939ae12479e9a030621fe48273fa73a161fa6c9d8fc13308958376c19d2740de
+    kit_version: "2.1.0"
+    kit_sha256: 821a7cc0f6be1e052369f8508a4b7ae6f2471cc38fe43f98100472e7c943b0aa
     why: >-
       planning/coordination agent; the plugin is THE agent channel (KIT-ADR-0028) — 1.x shipping no planner triggered this release
   - name: planner-f5
     kind: agent
     ships: true
     source: .claude/agents/planner-f5.md
-    kit_version: "1.0.0"
-    kit_sha256: 0b6ac53bae9fe38a39ba33bcfebe69751d2648e80a3ecf69496ae3084436b506
+    kit_version: "1.1.0"
+    kit_sha256: 6a89641204fd62c18f38f6e3e772dcd7c15374d0b9dc20a5ca4d58abec5fec84
     why: >-
       Fable-class planner variant; same frontmatter-pin rationale as feature-developer-f5
   - name: ci-checker
@@ -149,96 +149,96 @@ components:
     kind: command
     ships: true
     source: .claude/commands/babysit-pr.md
-    kit_version: "1.0.0"
-    kit_sha256: 9621f92d599d82b112ff96e92c44d01fbad6229aafc9b6a5051774905eeb2352
+    kit_version: "1.1.0"
+    kit_sha256: 17418223b679004eeb150073e3a9a59bc4098ffa04dc857e810e2b65dd1baac9
     why: >-
       cross-repo-aware workflow command; shipped since 1.0 generation
   - name: check-bots
     kind: command
     ships: true
     source: .claude/commands/check-bots.md
-    kit_version: "1.1.0"
-    kit_sha256: 832db14575c1a3800908a2fbcf433ab5ff73176a104f29e2f9892a33a1b8f04c
+    kit_version: "1.2.0"
+    kit_sha256: 0deee02347c5afb32e410cc97f13eb721fa8d74a66c664cefb93e29f68660f95
     why: >-
       cross-repo-aware workflow command; shipped since 1.0 generation
   - name: check-ci
     kind: command
     ships: true
     source: .claude/commands/check-ci.md
-    kit_version: "1.5.0"
-    kit_sha256: db88ffb361f74a489e8cf621c95b3f17a8c62c84fb8c446c87856a8da37a26b2
+    kit_version: "1.6.0"
+    kit_sha256: 710f8e5504e0eca629a108fbc925b1f84c163d1e8b27ef6cb6448abdcb9b9c3d
     why: >-
       cross-repo-aware workflow command; shipped since 1.0 generation
   - name: check-spec
     kind: command
     ships: true
     source: .claude/commands/check-spec.md
-    kit_version: "1.7.0"
-    kit_sha256: 89752a520e4cfa6ace49dee732897a97792c5aa6ff03bf91de3182a31e38b91c
+    kit_version: "1.8.0"
+    kit_sha256: 96bef56a00d866609434155e66a3aea625c9731635c1749bf7020c08c4e099a2
     why: >-
       cross-repo-aware workflow command; shipped since 1.0 generation
   - name: commit-push-pr
     kind: command
     ships: true
     source: .claude/commands/commit-push-pr.md
-    kit_version: "1.0.0"
-    kit_sha256: 6a1e6d48f4a090d11f41c7e2f20e4af85d4e0da82190a11ea04460ac98f73241
+    kit_version: "1.1.0"
+    kit_sha256: d0e614c46e2ada1540549956d667eb8619653df9dec051b131637ff36de3e899
     why: >-
       cross-repo-aware workflow command; shipped since 1.0 generation
   - name: preflight
     kind: command
     ships: true
     source: .claude/commands/preflight.md
-    kit_version: "1.4.0"
-    kit_sha256: 8dd85f4a4eb4814d0fd729eff02c1f5ca9f7cb5c113776f8d2a33bff89de47dd
+    kit_version: "1.5.0"
+    kit_sha256: 59ca930153177cbf5992d0da037df15a2b789d94cf597e5372180b9f900e7399
     why: >-
       cross-repo-aware workflow command; shipped since 1.0 generation
   - name: retro
     kind: command
     ships: true
     source: .claude/commands/retro.md
-    kit_version: "1.3.0"
-    kit_sha256: 4afb2e7b730e01a683d6a8ee338d8e3178f763f3fa9beba69618cdfc77696d46
+    kit_version: "1.4.0"
+    kit_sha256: bb7718f2f5fe9f138d963cb5775cb0f63a7fe8ed93edb7fed0baaef17bc1f3e7
     why: >-
       cross-repo-aware workflow command; shipped since 1.0 generation
   - name: start-task
     kind: command
     ships: true
     source: .claude/commands/start-task.md
-    kit_version: "1.0.0"
-    kit_sha256: 10d698e88c0b8b7fc57befd80a4a0e23d7c9bdbb575a6fabc248339b4cebfd4a
+    kit_version: "1.1.2"
+    kit_sha256: 60469ac2d3d42714db3502a0b20febd024f885fabd9c4f616d5645a10b6855e0
     why: >-
       cross-repo-aware workflow command; shipped since 1.0 generation
   - name: status
     kind: command
     ships: true
     source: .claude/commands/status.md
-    kit_version: "1.0.0"
-    kit_sha256: 8a03e61808cfaa38d3319a6ed0c01e96e007acc576837a72fed042236ac8a963
+    kit_version: "1.1.1"
+    kit_sha256: eed38af9286659d71ee7f42e8b9de30e43d5692213e7f11b8af4a9ea3a9973e9
     why: >-
       cross-repo-aware workflow command; shipped since 1.0 generation
   - name: triage-threads
     kind: command
     ships: true
     source: .claude/commands/triage-threads.md
-    kit_version: "1.1.0"
-    kit_sha256: 27d96099a0c3d8538f5a9f797fbc9e1148477ac1ae3cdd1734339c24eb2852f4
+    kit_version: "1.2.0"
+    kit_sha256: 7b1acaead5b88e68dabcaa7a91b42ce5227b41ac57d72c475f39825d97c226a8
     why: >-
       cross-repo-aware workflow command; shipped since 1.0 generation
   - name: wait-for-bots
     kind: command
     ships: true
     source: .claude/commands/wait-for-bots.md
-    kit_version: "1.0.0"
-    kit_sha256: 32e76a94687289bd0efe9764e677738f984fe51c57cb558d2d1fd0020fe151d4
+    kit_version: "1.1.0"
+    kit_sha256: 920970457d46669f3961d4d6f7252580d83664f8b87929c4c106e976e0a60a91
     why: >-
       cross-repo-aware workflow command; shipped since 1.0 generation
   - name: wrap-up
     kind: command
     ships: true
     source: .claude/commands/wrap-up.md
-    kit_version: "2.2.0"
-    kit_sha256: 6faa91ce1afa2b3389ec07ee67faeccbb841a8fecce7a605bd4bae1c35a63314
+    kit_version: "2.3.1"
+    kit_sha256: 652047bce6adf43b8a077f064dda52e481d8540e8e3001897195e39893d9b436
     why: >-
       cross-repo-aware workflow command; shipped since 1.0 generation
   - name: new-project
