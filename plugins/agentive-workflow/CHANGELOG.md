@@ -5,6 +5,53 @@ All notable changes to the `agentive-workflow` plugin. Format follows
 The upgrader agent fetches this file to compute the reconcile diff for
 consuming projects — keep Added/Removed/Renamed explicit per release.
 
+## [2.0.3] — 2026-08-11
+
+Patch sync. Fourteen components refreshed from the upstream kit
+(agentive-starter-kit, KIT-0101 — the cold-start UX contract): all
+twelve shipped commands plus the planner pair. Fixed in kit canon
+first, then released, per KIT-ADR-0028.
+
+### Added
+
+- Nothing. No new components in this release.
+
+### Removed
+
+- Nothing. No components retired in this release.
+
+### Renamed
+
+- Nothing. No component renames in this release; no reference reconcile
+  is required in consuming projects.
+
+### Changed
+
+- **Transparency headers (all 12 commands)** — every command now
+  instructs its first response to open with a standard header: one
+  line of what-this-does, a truthful Reads/Writes disclosure, and
+  links to the command's kit-canonical source on GitHub plus the
+  relevant docs page (KIT-0101 R1, operator finding F7: "I'm just
+  typing a command and seeing stuff happen"). Pattern authority:
+  the kit's `.kit/context/workflows/COMMAND-UX-CONTRACT.md`.
+- **Session-hop reasons (`wrap-up`, command bodies)** — remaining
+  new-session instructions carry their live reason (agent identity is
+  fixed at session launch; fresh context for a different contract);
+  the launcher-era persona rationale is nowhere cited (KIT-0101 R2).
+- **`check-ci` verdict list** — the header names all four verdicts
+  (PASS, FAIL, IN PROGRESS, MIXED).
+- **`planner` / `planner-f5` Phase 5** — the inline starter section
+  list is replaced by a pointer to `TASK-STARTER-TEMPLATE.md` as the
+  SINGLE starter authority (required core, house improvements,
+  proportionality rule, two worked examples); only the two
+  authoring-time rules remain in the agent body (KIT-0101 R5).
+  Consuming projects receive the reworked template via their scaffold
+  content, not this plugin.
+
+### Fixed
+
+- Nothing beyond the Changed entries above.
+
 ## [2.0.2] — 2026-08-11
 
 Patch sync. Six components refreshed from the upstream kit
