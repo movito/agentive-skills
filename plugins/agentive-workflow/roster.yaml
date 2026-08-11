@@ -205,8 +205,8 @@ components:
     kind: command
     ships: true
     source: .claude/commands/start-task.md
-    kit_version: "1.1.1"
-    kit_sha256: e06bdb82d01d690e6878d0f31e28bcb88c5727f40900021735d29321bc469f2b
+    kit_version: "1.1.2"
+    kit_sha256: 60469ac2d3d42714db3502a0b20febd024f885fabd9c4f616d5645a10b6855e0
     why: >-
       cross-repo-aware workflow command; shipped since 1.0 generation
   - name: status
