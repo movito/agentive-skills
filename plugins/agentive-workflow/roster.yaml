@@ -65,8 +65,8 @@ components:
     kind: agent
     ships: true
     source: .claude/agents/ci-checker.md
-    kit_version: "1.8.0"
-    kit_sha256: 1688409fc1ae2d300e2bcece71f04ae294f377537bcc7ebd38c5a5bbe9f23eb4
+    kit_version: "1.9.0"
+    kit_sha256: 5076fdebfafcfc7f11c516cc8b0286c2dfa62532e0cc10c21dd405c300104338
     why: >-
       consumer-facing CI verification; shipped since 1.0
   - name: code-reviewer

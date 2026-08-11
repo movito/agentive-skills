@@ -36,7 +36,10 @@ per KIT-ADR-0028.
   watched — never report it as a CI result), anything else a genuine
   failure. Resolve `timeout` vs `gtimeout` once (macOS ships the latter)
   and substitute it everywhere, alongside the existing repo-routing
-  placeholder.
+  placeholder. Where no supervisor exists at all, the fallback is a
+  **bounded poll loop** on the same 10-minute budget — a single
+  `gh run view` is a snapshot, not a wait, and stopping after one would
+  report a still-running workflow as the final verdict.
 - **CI retrigger could ship unrelated staged work (`check-ci`)** —
   `git commit --allow-empty` *permits* an empty commit; it does not
   *make* one, so a retrigger run against a dirty index silently
