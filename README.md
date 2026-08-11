@@ -1,12 +1,13 @@
 # agentive-skills
 
-Private Claude Code plugin marketplace for movito repos. **Single source of truth** for the
+Claude Code plugin marketplace for movito repos. **Single source of truth** for the
 agentive review/implementation workflow — skills, commands, and agents — previously copy-pasted
 across many repos.
 
-This repo is private. It is not published anywhere public and carries no support obligation to
-anyone else — it exists so the workflow is maintained in one place and *pulled* into projects
-rather than forked into them.
+This repo is **public** (a Claude Code plugin marketplace needs a reachable GitHub
+source) but carries no support obligation to anyone else — it exists so the workflow
+is maintained in one place and *pulled* into projects rather than forked into them.
+Anything committed here, including release metadata, is visible to anyone.
 
 ## What's inside
 
