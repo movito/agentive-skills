@@ -26,23 +26,23 @@
 # roster exactly like stale content (FAIL).
 
 plugin: agentive-workflow
-plugin_version: "2.0.1"
+plugin_version: "2.0.2"
 kit_repo: movito/agentive-starter-kit
 components:
   - name: feature-developer
     kind: agent
     ships: true
     source: .claude/agents/feature-developer.md
-    kit_version: "2.5.0"
-    kit_sha256: 724f734b4ce2d7a678170777d1aaa8dbe897da76029461e7e811281de8821c5c
+    kit_version: "2.6.0"
+    kit_sha256: aaf5cfc5b97c723adb96f79a825966f74dc7f4dc3e0b2137dc19378366a35a4e
     why: >-
       canonical gated implementation agent — the plugin's core
   - name: feature-developer-f5
     kind: agent
     ships: true
     source: .claude/agents/feature-developer-f5.md
-    kit_version: "1.5.0"
-    kit_sha256: d32db9f4b74bb16e441a149a6578432c04681dac292df37b507a8f641da52fea
+    kit_version: "1.6.0"
+    kit_sha256: 65bde15a203298272ff8b965f8bdd22919214ca228fa660439c728646539339d
     why: >-
       Fable-class variant; separate file because the model: pin is frontmatter (KIT-ADR-0025 §3)
   - name: planner
@@ -65,8 +65,8 @@ components:
     kind: agent
     ships: true
     source: .claude/agents/ci-checker.md
-    kit_version: "1.7.0"
-    kit_sha256: 2247070bc18fe4276809565bc070f056cf6e21881bb2397c01eba9447a827b62
+    kit_version: "1.9.0"
+    kit_sha256: 5076fdebfafcfc7f11c516cc8b0286c2dfa62532e0cc10c21dd405c300104338
     why: >-
       consumer-facing CI verification; shipped since 1.0
   - name: code-reviewer
@@ -165,8 +165,8 @@ components:
     kind: command
     ships: true
     source: .claude/commands/check-ci.md
-    kit_version: "1.4.0"
-    kit_sha256: 76910d4c720ff2bcb0ab3b76611514967347f36070225dac6bca2a5fb0ae7b58
+    kit_version: "1.5.0"
+    kit_sha256: db88ffb361f74a489e8cf621c95b3f17a8c62c84fb8c446c87856a8da37a26b2
     why: >-
       cross-repo-aware workflow command; shipped since 1.0 generation
   - name: check-spec
@@ -237,8 +237,8 @@ components:
     kind: command
     ships: true
     source: .claude/commands/wrap-up.md
-    kit_version: "2.1.0"
-    kit_sha256: 12438f74ff7c4dd4acf569544afff63771023f5a0e88a0633e57701a2d00b05d
+    kit_version: "2.2.0"
+    kit_sha256: 6faa91ce1afa2b3389ec07ee67faeccbb841a8fecce7a605bd4bae1c35a63314
     why: >-
       cross-repo-aware workflow command; shipped since 1.0 generation
   - name: new-project
@@ -265,8 +265,8 @@ components:
     kind: skill
     ships: true
     source: .claude/skills/code-review-evaluator/SKILL.md
-    kit_version: "1.8.0"
-    kit_sha256: 165e98f95bcc8dc2a55fa7746a617c5411be6677b2b120c8d1df4268723304c5
+    kit_version: "1.9.0"
+    kit_sha256: e5a2226569ace3a6683c2cc21ed2e1b72f08b3913be905ae18cece5c97b9b8cd
     why: >-
       workflow skill consumed by the shipped agents and commands
   - name: pre-implementation
