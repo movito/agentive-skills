@@ -205,16 +205,16 @@ components:
     kind: command
     ships: true
     source: .claude/commands/start-task.md
-    kit_version: "1.1.0"
-    kit_sha256: 64ce4372dbf4cbbdffd7711306637bd65a11a7694f081d698a4828dce3a06068
+    kit_version: "1.1.1"
+    kit_sha256: e06bdb82d01d690e6878d0f31e28bcb88c5727f40900021735d29321bc469f2b
     why: >-
       cross-repo-aware workflow command; shipped since 1.0 generation
   - name: status
     kind: command
     ships: true
     source: .claude/commands/status.md
-    kit_version: "1.1.0"
-    kit_sha256: 6da0aaea37fbc80dd6bdca8a397dee5bab2099105b89cfd9c1d52083d3f76b42
+    kit_version: "1.1.1"
+    kit_sha256: eed38af9286659d71ee7f42e8b9de30e43d5692213e7f11b8af4a9ea3a9973e9
     why: >-
       cross-repo-aware workflow command; shipped since 1.0 generation
   - name: triage-threads
@@ -237,8 +237,8 @@ components:
     kind: command
     ships: true
     source: .claude/commands/wrap-up.md
-    kit_version: "2.3.0"
-    kit_sha256: 98ba103e2bac66895d3273e63d446254baadb65bcaee5fba5139dfbf4d02e3a3
+    kit_version: "2.3.1"
+    kit_sha256: 652047bce6adf43b8a077f064dda52e481d8540e8e3001897195e39893d9b436
     why: >-
       cross-repo-aware workflow command; shipped since 1.0 generation
   - name: new-project
