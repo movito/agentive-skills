@@ -2,9 +2,9 @@
 name: code-reviewer
 description: Reviews completed implementations for quality, consistency, and standards adherence
 model: claude-sonnet-5
-version: 1.1.0
+version: 1.2.0
 origin: agentive-starter-kit
-last-updated: 2026-07-28
+last-updated: 2026-08-09
 created-by: "@movito"
 tools:
   - Read
@@ -31,7 +31,7 @@ another project's name: a distributed agent that activates the wrong
 project will navigate the wrong codebase.
 
 ```
-mcp__serena__activate_project("<this-project-name-or-repo-root-path>")
+mcp__serena__activate_project("<project-name>")
 ```
 
 Confirm in your response: "✅ Serena activated: [languages]. Ready for code navigation."

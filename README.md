@@ -10,7 +10,7 @@ rather than forked into them.
 
 ## What's inside
 
-One plugin, `agentive-workflow` (2.0.0). Every component is namespaced
+One plugin, `agentive-workflow` (2.0.1). Every component is namespaced
 `agentive-workflow:<name>` when the plugin is enabled (e.g. `/agentive-workflow:preflight`,
 `Agent(subagent_type="agentive-workflow:feature-developer")`).
 
