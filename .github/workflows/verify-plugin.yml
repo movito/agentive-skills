@@ -1,0 +1,31 @@
+# Verify plugin integrity (KIT-0110) — this repo's first CI check.
+#
+# The kit repo's drift guard proves "the roster remembers the kit's
+# bytes"; THIS check proves "the published bodies match the roster"
+# (plugin_sha256). Together they close the bump-hashes-forget-copy gap
+# the KIT-0109 retro surfaced. Same repo, no network beyond checkout.
+#
+# Operator step after merge: mark this check REQUIRED in the GitHub
+# branch-protection settings for main.
+
+name: Verify plugin integrity
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  verify:
+    name: Verify published bodies against roster.yaml
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install PyYAML
+        run: pip install pyyaml
+      - name: Verify roster schema + published body hashes
+        run: python scripts/verify_plugin_integrity.py
