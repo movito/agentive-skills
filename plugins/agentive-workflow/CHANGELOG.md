@@ -13,7 +13,10 @@ and evaluator rules, the KIT-0101 starter-checklist contract in the
 planner pair, and the KIT-0104 markdownlint sweep across the shipped
 bodies. Fixed in kit canon first, then released, per KIT-ADR-0028.
 Roster membership is byte-identical to 2.0.3 — 20 refreshes, zero
-additions, zero removals.
+additions, zero removals. The other 7 of the 27 shipped components
+were already in sync, so their `kit_sha256` entries are unchanged;
+the kit's drift guard is the automated check on that claim (it reports
+"in sync: 27 shipped components match the published roster").
 
 ### Added
 
