@@ -26,7 +26,7 @@
 # roster exactly like stale content (FAIL).
 
 plugin: agentive-workflow
-plugin_version: "2.0.3"
+plugin_version: "2.0.4"
 kit_repo: movito/agentive-starter-kit
 components:
   - name: feature-developer
@@ -34,7 +34,7 @@ components:
     ships: true
     source: .claude/agents/feature-developer.md
     kit_version: "2.6.0"
-    kit_sha256: aaf5cfc5b97c723adb96f79a825966f74dc7f4dc3e0b2137dc19378366a35a4e
+    kit_sha256: 9a87794ee76e46c3f41e3b82d113f3bcdf627813fdecd79b9ee8b36cabb236a8
     why: >-
       canonical gated implementation agent — the plugin's core
   - name: feature-developer-f5
@@ -42,7 +42,7 @@ components:
     ships: true
     source: .claude/agents/feature-developer-f5.md
     kit_version: "1.6.0"
-    kit_sha256: 65bde15a203298272ff8b965f8bdd22919214ca228fa660439c728646539339d
+    kit_sha256: 4794f23c4cd68885954568c4cd83254276ed8a5693b8b1ca604478b089943338
     why: >-
       Fable-class variant; separate file because the model: pin is frontmatter (KIT-ADR-0025 §3)
   - name: planner
@@ -50,7 +50,7 @@ components:
     ships: true
     source: .claude/agents/planner.md
     kit_version: "2.1.0"
-    kit_sha256: 821a7cc0f6be1e052369f8508a4b7ae6f2471cc38fe43f98100472e7c943b0aa
+    kit_sha256: 7d710508c3179b33a79e132a3c2dfc5ff3e992adff916e78619d296270d63a28
     why: >-
       planning/coordination agent; the plugin is THE agent channel (KIT-ADR-0028) — 1.x shipping no planner triggered this release
   - name: planner-f5
@@ -58,7 +58,7 @@ components:
     ships: true
     source: .claude/agents/planner-f5.md
     kit_version: "1.1.0"
-    kit_sha256: 6a89641204fd62c18f38f6e3e772dcd7c15374d0b9dc20a5ca4d58abec5fec84
+    kit_sha256: a68696b90706af3252c76c67e74f3d632e5e65b9b98efe26c086731ea4edadbd
     why: >-
       Fable-class planner variant; same frontmatter-pin rationale as feature-developer-f5
   - name: ci-checker
@@ -66,7 +66,7 @@ components:
     ships: true
     source: .claude/agents/ci-checker.md
     kit_version: "1.9.0"
-    kit_sha256: 5076fdebfafcfc7f11c516cc8b0286c2dfa62532e0cc10c21dd405c300104338
+    kit_sha256: 188e009e725fb1be38eb3fb7d36efece3fd4d74c5ece0400d8389e2a3a5cfeb1
     why: >-
       consumer-facing CI verification; shipped since 1.0
   - name: code-reviewer
@@ -74,7 +74,7 @@ components:
     ships: true
     source: .claude/agents/code-reviewer.md
     kit_version: "1.2.0"
-    kit_sha256: 0a788580a4f93bf9ad2c53a0b40b0fe4b99505f33ba7fae5fb74033a21490483
+    kit_sha256: 3ac4e06c4c522f31df7a3a0a5a19a045047a0da490d9d194cdf1db6777da0b20
     why: >-
       consumer-facing implementation review; shipped since 1.0
   - name: test-runner
@@ -82,7 +82,7 @@ components:
     ships: true
     source: .claude/agents/test-runner.md
     kit_version: "1.3.0"
-    kit_sha256: 8ac630d2b503554eb58dcbcd3dd747c143a20c34117cd25176ad150b546ab5c4
+    kit_sha256: db4acb2cbd3bd09f24376256bbc50212675e6b76ec5a6ac03c6aa9d09ea2afad
     why: >-
       consumer-facing TDD/QA agent; generic once Serena activation is de-hardcoded
   - name: document-reviewer
@@ -90,7 +90,7 @@ components:
     ships: true
     source: .claude/agents/document-reviewer.md
     kit_version: "1.3.0"
-    kit_sha256: 7ec7a563d84f905e20dec84c1a89032c9c52395b45557ace192111fd8f1d4e96
+    kit_sha256: f82f6770288b61c2d5654da767fd0e8150856fee568adf0987ba3f9044a3ed66
     why: >-
       generic documentation review; no kit machinery in the body
   - name: security-reviewer
@@ -98,7 +98,7 @@ components:
     ships: true
     source: .claude/agents/security-reviewer.md
     kit_version: "1.3.0"
-    kit_sha256: 27dbbbf839c2dd0e8cdfc79967898dbc16ebc3912b6518e4b13a34fa76bf26e9
+    kit_sha256: a3769892330aeae01c3ea3e7ccd13703c104a271489d37163a9a1b7b196a57d8
     why: >-
       generic security review; no kit machinery in the body
   - name: upgrader
@@ -106,7 +106,7 @@ components:
     ships: true
     source: .claude/agents/upgrader.md
     kit_version: "1.5.0"
-    kit_sha256: 85e923ee9054868e4671a91728c51d60fbad8429b1bc87efb99dab758e49ef47
+    kit_sha256: af89dfad07082dc4462a258ab4eaf3378648ce1155dd59ff89d3a7d659a8426d
     why: >-
       consumer-facing by design — moves consuming projects between plugin versions
   - name: bootstrap
@@ -150,7 +150,7 @@ components:
     ships: true
     source: .claude/commands/babysit-pr.md
     kit_version: "1.1.0"
-    kit_sha256: 17418223b679004eeb150073e3a9a59bc4098ffa04dc857e810e2b65dd1baac9
+    kit_sha256: eead23354532a06805f2549051b9ec2cc85f9279bab23ae89aaacc345b27fff5
     why: >-
       cross-repo-aware workflow command; shipped since 1.0 generation
   - name: check-bots
@@ -166,7 +166,7 @@ components:
     ships: true
     source: .claude/commands/check-ci.md
     kit_version: "1.6.0"
-    kit_sha256: 710f8e5504e0eca629a108fbc925b1f84c163d1e8b27ef6cb6448abdcb9b9c3d
+    kit_sha256: ac3c2d7aef3e98d161f8c5e7f5556c70876245648c115e5cc0d9ccec3bd95912
     why: >-
       cross-repo-aware workflow command; shipped since 1.0 generation
   - name: check-spec
@@ -198,7 +198,7 @@ components:
     ships: true
     source: .claude/commands/retro.md
     kit_version: "1.4.0"
-    kit_sha256: bb7718f2f5fe9f138d963cb5775cb0f63a7fe8ed93edb7fed0baaef17bc1f3e7
+    kit_sha256: cba558cde13350b43f358c989b1f81862ab0f39df57fc330cf15ecdb198e864d
     why: >-
       cross-repo-aware workflow command; shipped since 1.0 generation
   - name: start-task
@@ -222,7 +222,7 @@ components:
     ships: true
     source: .claude/commands/triage-threads.md
     kit_version: "1.2.0"
-    kit_sha256: 7b1acaead5b88e68dabcaa7a91b42ce5227b41ac57d72c475f39825d97c226a8
+    kit_sha256: 0fbf1b7f65b64ed94ff8d19d2194832161c12e7dcf5fd52176f0ce3cf31c34a1
     why: >-
       cross-repo-aware workflow command; shipped since 1.0 generation
   - name: wait-for-bots
@@ -238,7 +238,7 @@ components:
     ships: true
     source: .claude/commands/wrap-up.md
     kit_version: "2.3.1"
-    kit_sha256: 652047bce6adf43b8a077f064dda52e481d8540e8e3001897195e39893d9b436
+    kit_sha256: 55c8a72f23967e83628cb0656c599f809708346cd8955e8ed766723b9baf76e5
     why: >-
       cross-repo-aware workflow command; shipped since 1.0 generation
   - name: new-project
@@ -258,7 +258,7 @@ components:
     ships: true
     source: .claude/skills/bot-triage/SKILL.md
     kit_version: "1.1.0"
-    kit_sha256: c632d9a37c20ce21b1f8982473bd14b88f35be0dd4b808cdf52a5b45840fcb8f
+    kit_sha256: be78c17c865ad0723079073ec905503575cbb24829c064c2eefd7f249d101823
     why: >-
       workflow skill consumed by the shipped agents and commands
   - name: code-review-evaluator
@@ -266,7 +266,7 @@ components:
     ships: true
     source: .claude/skills/code-review-evaluator/SKILL.md
     kit_version: "1.9.0"
-    kit_sha256: e5a2226569ace3a6683c2cc21ed2e1b72f08b3913be905ae18cece5c97b9b8cd
+    kit_sha256: 50cd807926cb50c67606194c0eb7d819d7597186983be3fc194ebc1f40508d41
     why: >-
       workflow skill consumed by the shipped agents and commands
   - name: pre-implementation
@@ -274,7 +274,7 @@ components:
     ships: true
     source: .claude/skills/pre-implementation/SKILL.md
     kit_version: "1.2.0"
-    kit_sha256: 44e476834159acef658ad53536ef9e867dd8198c034a9a0fa1a89c01ff0d8cd7
+    kit_sha256: acad53ea0ad827a3a76c8d439a08326c26a513c590c8cf3a56e298a7b709a302
     why: >-
       workflow skill consumed by the shipped agents and commands
   - name: review-handoff
@@ -282,7 +282,7 @@ components:
     ships: true
     source: .claude/skills/review-handoff/SKILL.md
     kit_version: "1.1.0"
-    kit_sha256: 69411cde85ee5d8357884bf4a0a67104be60fa7c4dc1f3887282a4e5a11b7f01
+    kit_sha256: 28ceb48bac0483335960303b1b4fb7198f6b1ee82a83440c121ad83e443e6c2e
     why: >-
       workflow skill consumed by the shipped agents and commands
   - name: self-review
@@ -290,6 +290,6 @@ components:
     ships: true
     source: .claude/skills/self-review/SKILL.md
     kit_version: "1.2.0"
-    kit_sha256: 20c14489f6cdae0c59803f44e27eef011682fb627b3feaeb29e77407d68bcb05
+    kit_sha256: 562249cbd91cfb39f0a3d4631dd1e6143d1d2535966252b34fe1a83d4441d7b6
     why: >-
       workflow skill consumed by the shipped agents and commands

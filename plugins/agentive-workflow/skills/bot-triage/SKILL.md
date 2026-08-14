@@ -65,11 +65,39 @@ Reference knowledge for triaging automated review comments. Use `/agentive-workf
   objects. The ONLY truth for review state is the `reviewThreads`
   GraphQL query (+ review decision); never proceed on a green
   check-run without fetching threads.
+  **Fifth face (KIT-0102): a bot check can show `pass` while the
+  review is RATE-LIMITED** — "pass — Review rate limited" means the
+  latest push may be unreviewed. Before certifying a PR on a bot's
+  approval, verify BOTH: zero unresolved reviewThreads AND the
+  approving review's commit SHA matches the PR head — an APPROVED
+  filed against an earlier commit certifies nothing about the code
+  being merged.
+  **Sixth face (KIT-0104 PR 3): a bot check can show `skipping`
+  while the bot is actively reviewing** — BugBot's check-run read
+  `skipping` for an entire session during which it posted a
+  Medium-severity thread. Statuses lie in every direction; the
+  threads query is the only truth, in both the "clean" and the
+  "reviewed" directions.
 - **Class sweeps must be indentation-tolerant** — when sweeping a
   markdown/format class from one finding (e.g. MD040 bare fences), the
   pattern is `^\s*` + token, never `^` + token: KIT-0067's `^```$`
   sweep fixed 4 fences and missed a list-indented one three lines
   away. A zero-hit grep proves the anchored token, not the class.
+- **GREP-FIRST sweeps (added 2026-08-12 — fourth incomplete-sweep
+  occurrence across KIT-0098/0100/0102)**: write the class grep BEFORE
+  editing anything; its hit list IS the work list, checked off site by
+  site. The recurring failure is not a missed re-check at the end — it
+  is a sweep DEFINED from the flagged site instead of from the class,
+  so sibling sites were never on the list. End-state grep stays as the
+  proof; the opening grep is what makes it provable.
+  **Refinement (KIT-0102 retro): derive the class from the full
+  surface of the THING being changed** — its names, commands,
+  subcommands, aliases — not from the incident that flagged it. The
+  #127 grep covered five machinery names but never `project sync`,
+  the very command being retired; the closing grep came back clean
+  only because it inherited the opening grep's blind spot. A clean
+  end-state grep proves the pattern, not the class — the class
+  definition itself is the reviewable artifact.
 - **Syntax-verify committable suggestions touching shell before applying** —
   especially heredocs, quoting, or redirects: run `bash -n` (or a scratch
   execution test) on the suggested code first. Committable ≠ compilable:
@@ -88,6 +116,12 @@ Reference knowledge for triaging automated review comments. Use `/agentive-workf
 
 ## Batch Strategy
 
+0. **FIRST ACTION of every triage: the reviewThreads GraphQL query** —
+   not `pulls/comments` REST, which returns only top-level review
+   comments and silently under-counts (KIT-0102: REST showed 3
+   threads; GraphQL showed 10 — a triage built on REST would have
+   certified 7 unhandled threads). The endpoint-truth rule above is
+   now a mandatory opening step, not a caveat.
 1. Read every comment from both bots before fixing anything
 2. Categorize each as Fix or Resolve-without-fixing
 3. Implement all fixes together
@@ -130,6 +164,7 @@ Each round follows the same loop:
 4. Push once → next round
 
 **Resolve-without-fixing** is still valid for:
+
 - Findings that are factually wrong (false positives)
 - Platform-irrelevant concerns (e.g., Windows CRLF on a macOS-only project)
 - Findings that contradict project conventions (with justification)
@@ -184,6 +219,7 @@ agentive review-helper reply {pr_number} {comment_id} \
 ```
 
 **Rules:**
+
 - Always reference the commit SHA where the fix was made
 - Cite specific line numbers in the current code
 - Keep it to 1-3 sentences — the code diff speaks for itself

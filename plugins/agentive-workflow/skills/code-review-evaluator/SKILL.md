@@ -118,6 +118,17 @@ You may skip the evaluator when ALL of these conditions are true:
 - **No external integrations** (no subprocess, API calls, or new dependencies)
 - **Established patterns only** (all code follows existing patterns in the codebase)
 
+### Mixed-shape tasks never skip (added 2026-08-12)
+
+The skip rules above are for trivially small LOGIC changes. A task that
+mixes deletions with authored records, messages, or sweeps (retirement
+tasks, release tasks, canon fixes) always runs at least the fast tier
+pre-open — first-draft authored content is where self-introduced
+defects concentrate, and skipping the trio makes the BOTS the first
+reviewers, which converts catchable defects into post-open fix rounds
+(KIT-0102 PR #127: skip granted for "pure deletion", ten bot threads
+followed, the two substantive ones self-introduced authored content).
+
 ### Always document the skip
 
 ```bash
@@ -230,6 +241,7 @@ ID2-0002 retro documented a concrete example: Claude Sonnet flagged
 diff didn't include the line where it was defined.
 
 Include:
+
 - Full source of all new/changed files (complete files, not diffs)
 - Full test file
 - Summary of what bots found and how it was addressed
@@ -353,7 +365,7 @@ mode — never a silent partial trio:
 3. **NAME the mode in the persisted review record** (Step 4's
    artifact). First line of the record, e.g.:
 
-   ```
+   ```text
    Mode: degraded single-key (only GEMINI_API_KEY present) —
    code-reviewer-fast only + self-review checklist; code-reviewer and
    claude-code not run.

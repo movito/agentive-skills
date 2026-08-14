@@ -11,7 +11,7 @@ Anything committed here, including release metadata, is visible to anyone.
 
 ## What's inside
 
-One plugin, `agentive-workflow` (2.0.2). Every component is namespaced
+One plugin, `agentive-workflow` (2.0.4). Every component is namespaced
 `agentive-workflow:<name>` when the plugin is enabled (e.g. `/agentive-workflow:preflight`,
 `Agent(subagent_type="agentive-workflow:feature-developer")`).
 
@@ -25,7 +25,7 @@ content is newer than the last published release here.
 | Skill | Version | Purpose |
 |---|---|---|
 | `bot-triage` | 1.1.0 | Triage/reply/resolve BugBot & CodeRabbit comments |
-| `code-review-evaluator` | 1.3.0 | Adversarial code-review evaluator after bot rounds |
+| `code-review-evaluator` | 1.9.0 | Adversarial code-review evaluator after bot rounds |
 | `pre-implementation` | 1.2.0 | Pre-code checks: pattern reuse, API misuse, spec drift |
 | `review-handoff` | 1.1.0 | Hand off a PR for human review after bots pass |
 | `self-review` | 1.2.0 | Input-boundary self-review pass before committing |

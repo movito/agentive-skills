@@ -5,6 +5,72 @@ All notable changes to the `agentive-workflow` plugin. Format follows
 The upgrader agent fetches this file to compute the reconcile diff for
 consuming projects — keep Added/Removed/Renamed explicit per release.
 
+## [2.0.4] — 2026-08-14
+
+Patch sync. Twenty components refreshed from the upstream kit
+(agentive-starter-kit at `94c8d82`), carrying the KIT-0102 bot-triage
+and evaluator rules, the KIT-0101 starter-checklist contract in the
+planner pair, and the KIT-0104 markdownlint sweep across the shipped
+bodies. Fixed in kit canon first, then released, per KIT-ADR-0028.
+Roster membership is byte-identical to 2.0.3 — 20 refreshes, zero
+additions, zero removals.
+
+### Added
+
+- Nothing. No new components in this release.
+
+### Removed
+
+- Nothing. No components retired in this release.
+
+### Renamed
+
+- Nothing. No component renames in this release; no reference reconcile
+  is required in consuming projects.
+
+### Changed
+
+- **`bot-triage` — two more faces of the lying-status class.** Fifth
+  face (KIT-0102): a bot check can read `pass` while the review was
+  RATE-LIMITED, so certify only when unresolved threads are zero AND
+  the approving review's commit SHA matches the PR head. Sixth face
+  (KIT-0104): a check can read `skipping` while the bot is actively
+  posting threads. Statuses lie in both directions; the `reviewThreads`
+  query is the only truth.
+- **`bot-triage` — `reviewThreads` GraphQL is now step 0 of every
+  triage**, not a caveat. The `pulls/comments` REST endpoint returns
+  only top-level review comments and under-counts (KIT-0102: 3 via
+  REST vs 10 via GraphQL).
+- **`bot-triage` — grep-first class sweeps.** Write the class grep
+  BEFORE editing; its hit list is the work list. Derive the class from
+  the full surface of the thing being changed (names, commands,
+  subcommands, aliases), not from the incident that flagged it — a
+  clean closing grep proves the pattern, not the class.
+- **`code-review-evaluator` — mixed-shape tasks never skip the trio.**
+  The skip rules cover trivially small LOGIC changes only; a task that
+  mixes deletions with authored records, messages, or sweeps runs at
+  least the fast tier pre-open, because skipping makes the bots the
+  first reviewers of first-draft prose (KIT-0102 PR #127).
+- **`planner` / `planner-f5` — the closing operator launch checklist
+  is unconditional** (starter template v2.1.0): every task starter ends
+  with `cd <worktree>` → `claude --agent <agent>` → paste the starter
+  as the FIRST message (a bare launch idles) → `/rename <TASK-ID>
+  <name>`. This replaces the older "suggest renaming the session"
+  footer convention — a new operator must be able to launch from the
+  starter alone.
+- **Markdown hygiene across all twenty refreshed bodies** (KIT-0104's
+  markdownlint gate): blank lines before lists, language tags on bare
+  fences (```text` / ```markdown`), fenced blocks indented to their
+  list item, and blockquote continuity in the feature-developer pair's
+  Phase 5 note. No behavioral text changed in these hunks.
+
+### Fixed
+
+- **README staleness (marketplace repo, not a shipped component)** —
+  the "what's inside" line said 2.0.2 while 2.0.3 was published, and
+  the skills table listed `code-review-evaluator` at 1.3.0 while 1.9.0
+  ships. Both corrected.
+
 ## [2.0.3] — 2026-08-11
 
 Patch sync. Fourteen components refreshed from the upstream kit
