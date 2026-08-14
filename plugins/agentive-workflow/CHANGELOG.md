@@ -62,8 +62,8 @@ the kit's drift guard is the automated check on that claim (it reports
   footer convention — a new operator must be able to launch from the
   starter alone.
 - **Markdown hygiene across all twenty refreshed bodies** (KIT-0104's
-  markdownlint gate): blank lines before lists, language tags on bare
-  fences (```text` / ```markdown`), fenced blocks indented to their
+  markdownlint gate): blank lines before lists, a `text` or `markdown`
+  language tag on every bare fence, fenced blocks indented to their
   list item, and blockquote continuity in the feature-developer pair's
   Phase 5 note. No behavioral text changed in these hunks.
 
