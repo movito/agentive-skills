@@ -17,8 +17,9 @@ THIS check runs marketplace-side, same repo, no network:
    derived path (``agents/<name>.md``, ``commands/<name>.md``,
    ``skills/<name>/SKILL.md``) must exist and hash to the rostered
    ``plugin_sha256``.
-3. Every published body file must be rostered — an unrostered body is a
-   ship nobody decided.
+3. Every file under the body directories (``agents/``, ``commands/``,
+   ``skills/`` — walked recursively, hidden files included) must be a
+   rostered body — an unrostered file is a ship nobody decided.
 
 The bodies intentionally differ from kit canon (generalization per
 KIT-ADR-0025); that is why the comparison lives here, against
@@ -40,14 +41,16 @@ PLUGIN_DIR = Path(__file__).resolve().parent.parent / "plugins" / "agentive-work
 ROSTER = PLUGIN_DIR / "roster.yaml"
 
 KINDS = ("agent", "command", "skill")
-_SAFE_NAME = re.compile(r"^[A-Za-z0-9._-]+$")
+# No leading dot: a hidden shipped file is never a legitimate component
+# (KIT-0110 evaluator).
+_SAFE_NAME = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._-]*$")
 _SHA256 = re.compile(r"^[0-9a-f]{64}$")
 
-BODY_GLOBS = (
-    "agents/*.md",
-    "commands/*.md",
-    "skills/*/SKILL.md",
-)
+# The directories that hold shipped bodies. The unrostered scan walks
+# them RECURSIVELY and flags every file that is not a rostered body —
+# narrow per-kind globs would let an extra file (skills/x/HOWTO.md,
+# agents/notes.txt) ship undetected (KIT-0110 evaluator).
+BODY_DIRS = ("agents", "commands", "skills")
 
 EXIT_OK = 0
 EXIT_FINDINGS = 1
@@ -158,14 +161,19 @@ def check_bodies(components: list[dict]) -> list[str]:
                 "edit outside a release; re-run the kit's plugin_resync.py"
             )
 
-    for pattern in BODY_GLOBS:
-        for path in sorted(PLUGIN_DIR.glob(pattern)):
+    for sub in BODY_DIRS:
+        base = PLUGIN_DIR / sub
+        if not base.is_dir():
+            continue
+        for path in sorted(base.rglob("*")):
+            if not path.is_file():
+                continue
             rel = path.relative_to(PLUGIN_DIR).as_posix()
-            # `in` on a set: membership check that this published body has
+            # `in` on a set: membership check that this published file has
             # a roster entry, not substring matching.
             if rel not in rostered_bodies:
                 findings.append(
-                    f"unrostered body: {rel} ships with no roster entry — "
+                    f"unrostered file: {rel} ships with no roster entry — "
                     "a ship nobody decided; roster it or remove it"
                 )
 
