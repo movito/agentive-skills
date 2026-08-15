@@ -1,0 +1,8 @@
+{
+  "name": "agentive-skills",
+  "private": true,
+  "description": "CI tooling manifest — markdownlint dependency tree locked for reproducible lint runs (KIT-0105 release rider)",
+  "devDependencies": {
+    "markdownlint-cli2": "0.23.2"
+  }
+}

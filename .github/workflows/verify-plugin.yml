@@ -43,7 +43,9 @@ jobs:
   # Markdown lint (KIT-0110 F2 rider, landed with the 2.1.0 release):
   # the published bodies are kit markdown swept under these same rules
   # in KIT-0104 — this keeps post-release edits from drifting style.
-  # Version pinned via npx (no third-party action to trust); config:
+  # Full dependency tree locked via package-lock.json (CodeRabbit,
+  # this PR: npx pins only the CLI, transitive deps float); installed
+  # with npm ci --ignore-scripts, run from the local binary. Config:
   # .markdownlint-cli2.jsonc (mirrors the kit's).
   markdownlint:
     name: Lint markdown (markdownlint-cli2)
@@ -52,5 +54,7 @@ jobs:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
           persist-credentials: false
-      - name: Run markdownlint-cli2 (pinned)
-        run: npx --yes markdownlint-cli2@0.23.2
+      - name: Install locked markdownlint tree
+        run: npm ci --ignore-scripts
+      - name: Run markdownlint-cli2 (lockfile-pinned)
+        run: ./node_modules/.bin/markdownlint-cli2
