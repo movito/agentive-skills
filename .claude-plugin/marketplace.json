@@ -6,14 +6,14 @@
   },
   "metadata": {
     "description": "Marketplace for movito agentive projects. Single source of truth for the agentive review/implementation workflow: skills, commands, and agents.",
-    "version": "2.0.4"
+    "version": "2.1.0"
   },
   "plugins": [
     {
       "name": "agentive-workflow",
       "source": "./plugins/agentive-workflow",
-      "description": "Agentive review + implementation workflow: 10 agents (feature-developer/-f5, planner/-f5, code-reviewer, ci-checker, test-runner, document-reviewer, security-reviewer, upgrader), 12 workflow commands, 5 skills. Namespaced agentive-workflow:<name>.",
-      "version": "2.0.4",
+      "description": "Agentive review + implementation workflow: 11 agents (feature-developer/-f5, planner/-f5, code-reviewer, ci-checker, test-runner, document-reviewer, security-reviewer, upgrader, project-intake), 12 workflow commands, 5 skills. Namespaced agentive-workflow:<name>.",
+      "version": "2.1.0",
       "author": { "name": "movito" }
     }
   ]

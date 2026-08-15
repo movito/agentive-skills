@@ -5,6 +5,76 @@ All notable changes to the `agentive-workflow` plugin. Format follows
 The upgrader agent fetches this file to compute the reconcile diff for
 consuming projects — keep Added/Removed/Renamed explicit per release.
 
+## [2.1.0] — 2026-08-15
+
+Minor release — the shipped set changes (KIT-0105): `project-intake`
+joins the plugin, and the intended flow becomes real — open Claude in
+the prototype's own folder (the Cowork output) and run the intake in
+place. 28 shipped components, up from 27.
+
+**The first tooled cut**: the delta and every hash column in this
+release were computed by the kit's `scripts/local/plugin_resync.py`
+(KIT-0110) — three-way merge against the rostered base, loud
+conflicts, `kit_sha256`/`plugin_sha256` maintained by the tool. Its
+run: 7 drifted components detected; 4 merged clean; 3 surfaced
+conflicts (the deliberate published adaptations in
+`feature-developer`, `feature-developer-f5`, `self-review`) resolved
+by hand preserving those adaptations. Kit source:
+agentive-starter-kit `main` at `37f707e`.
+
+### Added
+
+- **`project-intake` (agent, claude-sonnet-5)** — graduates a
+  prototype into the split pair (plain code repo + preset-configured
+  planning repo) from a handoff brief and a code folder. Ships now
+  because KIT-0104/KIT-0105 made it location-agnostic: it verifies
+  the `agentive` CLI up front (absence prints the install command —
+  never a dead end), treats its working directory as the candidate
+  prototype folder, and composes the packaged door (`agentive new`)
+  from wherever it runs. No kit checkout required.
+
+### Removed
+
+- Nothing. No components retired in this release.
+
+### Renamed
+
+- Nothing. No component renames in this release; no reference
+  reconcile is required in consuming projects.
+
+### Changed
+
+- **`retro` (1.5.0) — fail-closed thread counting (KIT-0112).** The
+  reviewThreads count now requests `pageInfo { hasNextPage endCursor }`
+  and REFUSES to certify completeness past 100 threads, printing the
+  real pagination cursor, instead of silently under-counting.
+- **`bot-triage` (1.2.0) — seventh lying-status face.** CodeRabbit's
+  commit-status can read `pass — Review rate limited` while NO review
+  exists behind an org spending cap; recovery is raise-the-cap plus an
+  explicit `@coderabbitai review` (it does not auto-trigger).
+- **`upgrader` (1.5.1) — packaged-era Phase 8.** The retired
+  `project sync --dry-run` hint is gone; post-upgrade hints now follow
+  the `scripts/core/` world-split (`uv tool upgrade agentive-kit` /
+  `docs/UPDATING-YOUR-PROJECT.md`).
+- **`wrap-up` (2.3.3) — distribution note corrected.** It ships via
+  this plugin; the old note claimed otherwise (the retired script-sync
+  channel was the only thing it was ever excluded from).
+- **`self-review` (1.2.1) — dead contract anchors retired to
+  historical form** (items on wrapper exit codes and scoped staging);
+  the published adaptation's stale "reference implementations live in
+  the upstream kit" line corrected the same way.
+- **`feature-developer` (2.6.1) / `feature-developer-f5` (1.6.1)** —
+  kit-side canon refresh (the changed region is replaced by the
+  published project-agnostic context block, preserved as is; bodies
+  re-based on the new kit versions).
+- **Roster hygiene**: `planner`'s stale `kit_version` column corrected
+  `2.0.4` → `2.1.0` (hash-verified — the recorded `kit_sha256` already
+  matched the kit file whose frontmatter says 2.1.0; column-only fix,
+  no body change).
+- **CI rider (KIT-0110 F2)**: `markdownlint-cli2` job added to the
+  verify workflow (pinned via npx; config mirrors the kit's rule set;
+  `CONSOLIDATION.md` ignored as a historical record).
+
 ## [2.0.4] — 2026-08-14
 
 Patch sync. Twenty components refreshed from the upstream kit

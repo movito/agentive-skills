@@ -39,3 +39,22 @@ jobs:
         run: pip install --require-hashes -r scripts/requirements-verify.txt
       - name: Verify roster schema + published body hashes
         run: python scripts/verify_plugin_integrity.py
+
+  # Markdown lint (KIT-0110 F2 rider, landed with the 2.1.0 release):
+  # the published bodies are kit markdown swept under these same rules
+  # in KIT-0104 — this keeps post-release edits from drifting style.
+  # Full dependency tree locked via package-lock.json (CodeRabbit,
+  # this PR: npx pins only the CLI, transitive deps float); installed
+  # with npm ci --ignore-scripts, run from the local binary. Config:
+  # .markdownlint-cli2.jsonc (mirrors the kit's).
+  markdownlint:
+    name: Lint markdown (markdownlint-cli2)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - name: Install locked markdownlint tree
+        run: npm ci --ignore-scripts
+      - name: Run markdownlint-cli2 (lockfile-pinned)
+        run: ./node_modules/.bin/markdownlint-cli2
