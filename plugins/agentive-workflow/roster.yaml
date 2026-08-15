@@ -44,15 +44,15 @@
 # exactly like stale content (FAIL).
 
 plugin: agentive-workflow
-plugin_version: "2.0.4"
+plugin_version: "2.1.0"
 kit_repo: movito/agentive-starter-kit
 components:
   - name: feature-developer
     kind: agent
     ships: true
     source: .claude/agents/feature-developer.md
-    kit_version: "2.6.0"
-    kit_sha256: 9a87794ee76e46c3f41e3b82d113f3bcdf627813fdecd79b9ee8b36cabb236a8
+    kit_version: "2.6.1"
+    kit_sha256: f1acac518791bffa279358725b7f7c8a1ece88337d0bca892ec096f26899c3e7
     plugin_sha256: f3ff1c56913a6a0078739577ab1889fe1f7ac8022497098537390bf33ab95a97
     why: >-
       canonical gated implementation agent — the plugin's core
@@ -60,8 +60,8 @@ components:
     kind: agent
     ships: true
     source: .claude/agents/feature-developer-f5.md
-    kit_version: "1.6.0"
-    kit_sha256: 4794f23c4cd68885954568c4cd83254276ed8a5693b8b1ca604478b089943338
+    kit_version: "1.6.1"
+    kit_sha256: d6ad5febfd3826346320763fcebb618721797043fb48edcd671d9824c38cb7cd
     plugin_sha256: 11df32a52052cd4b306113218f52f97b26f9d20c2590689db55c856974d8d459
     why: >-
       Fable-class variant; separate file because the model: pin is frontmatter (KIT-ADR-0025 §3)
@@ -132,9 +132,9 @@ components:
     kind: agent
     ships: true
     source: .claude/agents/upgrader.md
-    kit_version: "1.5.0"
-    kit_sha256: af89dfad07082dc4462a258ab4eaf3378648ce1155dd59ff89d3a7d659a8426d
-    plugin_sha256: af89dfad07082dc4462a258ab4eaf3378648ce1155dd59ff89d3a7d659a8426d
+    kit_version: "1.5.1"
+    kit_sha256: 98cab3b81038bee722e337c9c4dc67ea6a47507c8be76ec85c4e311ccf16bb5c
+    plugin_sha256: 98cab3b81038bee722e337c9c4dc67ea6a47507c8be76ec85c4e311ccf16bb5c
     why: >-
       consumer-facing by design — moves consuming projects between plugin versions
   - name: bootstrap
@@ -145,10 +145,14 @@ components:
       interviewer for the kit-side setup door (scripts/local/bootstrap); the door does not ship
   - name: project-intake
     kind: agent
-    ships: false
+    ships: true
     source: .claude/agents/project-intake.md
+    kit_version: "1.2.0"
+    kit_sha256: 474e120c3aaee30d31c6daf312451dfe243d84be2ed7bd61ea49f8ea8651196b
+    plugin_sha256: 474e120c3aaee30d31c6daf312451dfe243d84be2ed7bd61ea49f8ea8651196b
     why: >-
-      runs FROM a kit checkout by its own header; composes the kit-side door
+      location-agnostic since KIT-0105: composes the packaged door
+      (agentive new) and runs in the prototype's own folder
   - name: agent-creator
     kind: agent
     ships: false
@@ -231,9 +235,9 @@ components:
     kind: command
     ships: true
     source: .claude/commands/retro.md
-    kit_version: "1.4.0"
-    kit_sha256: cba558cde13350b43f358c989b1f81862ab0f39df57fc330cf15ecdb198e864d
-    plugin_sha256: 850437b8324b3ac88115202fae4af6e4402d3ca544c7ab12a16b5046ba4306f9
+    kit_version: "1.5.0"
+    kit_sha256: 154b6350e399b401de48e71a06e2e62f01688be18916e231ea477a7b70e0ba35
+    plugin_sha256: 0edf296c2d3e5f5046db7b203a53662e89bc83aac1436b4094f7846441213f8a
     why: >-
       cross-repo-aware workflow command; shipped since 1.0 generation
   - name: start-task
@@ -276,9 +280,9 @@ components:
     kind: command
     ships: true
     source: .claude/commands/wrap-up.md
-    kit_version: "2.3.1"
-    kit_sha256: 55c8a72f23967e83628cb0656c599f809708346cd8955e8ed766723b9baf76e5
-    plugin_sha256: fd1219bd54da797880707d4d080caf144f415e54730e7550a79699b702631f50
+    kit_version: "2.3.3"
+    kit_sha256: 3b701f18991f7cda4970442a97263257d6d05d440a84f73d25a613434c97f568
+    plugin_sha256: 51b35a8961489c8e43b876abc862ac59f7a7061fba466b37c1caf406ed12c99a
     why: >-
       cross-repo-aware workflow command; shipped since 1.0 generation
   - name: new-project
@@ -297,9 +301,9 @@ components:
     kind: skill
     ships: true
     source: .claude/skills/bot-triage/SKILL.md
-    kit_version: "1.1.0"
-    kit_sha256: be78c17c865ad0723079073ec905503575cbb24829c064c2eefd7f249d101823
-    plugin_sha256: b1d6dbe008f23c3977cc83099b30575bfa77ad9203c4c4910dd28514c89eee2e
+    kit_version: "1.2.0"
+    kit_sha256: 67013bf2d653a8d6385c51a49f0807f7f1ce5ae56ecf9bd6f10cfc1cd6b94a48
+    plugin_sha256: fe4ba4c901177e9d4c48511da694331531c3691c695fb3923baa3f8ded1552c5
     why: >-
       workflow skill consumed by the shipped agents and commands
   - name: code-review-evaluator
@@ -333,8 +337,8 @@ components:
     kind: skill
     ships: true
     source: .claude/skills/self-review/SKILL.md
-    kit_version: "1.2.0"
-    kit_sha256: 562249cbd91cfb39f0a3d4631dd1e6143d1d2535966252b34fe1a83d4441d7b6
-    plugin_sha256: 1996a52f88af9327cef80b5767be77a915ecf4efe242482ff4d031bfd7d47c86
+    kit_version: "1.2.1"
+    kit_sha256: 6dfa30add26b726d9420754388137579bdfa59e2254b3f0179f62ef987240768
+    plugin_sha256: 4cd2b469de55babd8f4d67be009512f4f4567f5419781947242140229253cb4a
     why: >-
       workflow skill consumed by the shipped agents and commands

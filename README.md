@@ -11,7 +11,7 @@ Anything committed here, including release metadata, is visible to anyone.
 
 ## What's inside
 
-One plugin, `agentive-workflow` (2.0.4). Every component is namespaced
+One plugin, `agentive-workflow` (2.1.0). Every component is namespaced
 `agentive-workflow:<name>` when the plugin is enabled (e.g. `/agentive-workflow:preflight`,
 `Agent(subagent_type="agentive-workflow:feature-developer")`).
 
@@ -52,6 +52,7 @@ single-repo mode when no such section exists.
 | `document-reviewer` | claude-sonnet-5 | Documentation quality review |
 | `security-reviewer` | claude-opus-4-8 | Security analysis and hardening |
 | `upgrader` | claude-sonnet-5 | Moves a consuming project between plugin versions |
+| `project-intake` | claude-sonnet-5 | Graduates a prototype into the split pair; location-agnostic — run it in the prototype's own folder (KIT-0105) |
 
 > **Localization is runtime-read (KIT-ADR-0025).** Distributed agent bodies are
 > project-agnostic: no fill-in template regions ship. Each agent reads project

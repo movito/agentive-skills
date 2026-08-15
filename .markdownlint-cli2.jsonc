@@ -1,0 +1,24 @@
+// markdownlint-cli2 config — KIT-0105 release rider (KIT-0110 F2).
+// Rule set mirrors the upstream kit's .markdownlint-cli2.jsonc: the
+// published bodies ARE kit markdown (swept under these rules in
+// KIT-0104), so the same decisions apply. Rationale for each toggle
+// lives in the kit copy; keep the two aligned when rules change.
+{
+  "config": {
+    "default": true,
+    "MD013": false,
+    "MD029": { "style": "one_or_ordered" },
+    "MD033": false,
+    "MD024": { "siblings_only": true },
+    "MD041": false,
+    "MD036": false,
+    "MD060": false
+  },
+  "globs": ["**/*.md"],
+  "ignores": [
+    "node_modules/**",
+    // Historical record of the 2026-08 marketplace consolidation —
+    // stays as written (the kit's historical-records precedent)
+    "CONSOLIDATION.md"
+  ]
+}
