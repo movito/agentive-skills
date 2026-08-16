@@ -44,7 +44,7 @@
 # exactly like stale content (FAIL).
 
 plugin: agentive-workflow
-plugin_version: "2.1.0"
+plugin_version: "2.1.1"
 kit_repo: movito/agentive-starter-kit
 components:
   - name: feature-developer
@@ -147,9 +147,9 @@ components:
     kind: agent
     ships: true
     source: .claude/agents/project-intake.md
-    kit_version: "1.2.0"
-    kit_sha256: 474e120c3aaee30d31c6daf312451dfe243d84be2ed7bd61ea49f8ea8651196b
-    plugin_sha256: 474e120c3aaee30d31c6daf312451dfe243d84be2ed7bd61ea49f8ea8651196b
+    kit_version: "1.3.2"
+    kit_sha256: 53e8e180afd7bd90509e4e0517e7bd3d21d1171886bdb83c75dc7f25fd87f9e2
+    plugin_sha256: 53e8e180afd7bd90509e4e0517e7bd3d21d1171886bdb83c75dc7f25fd87f9e2
     why: >-
       location-agnostic since KIT-0105: composes the packaged door
       (agentive new) and runs in the prototype's own folder
