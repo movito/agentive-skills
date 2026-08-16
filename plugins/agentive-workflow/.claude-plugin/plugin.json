@@ -1,7 +1,7 @@
 {
   "name": "agentive-workflow",
   "description": "Agentive review + implementation workflow for planning/code projects. Agents (feature-developer, feature-developer-f5, planner, planner-f5, code-reviewer, ci-checker, test-runner, document-reviewer, security-reviewer, upgrader), skills (bot-triage, code-review-evaluator, pre-implementation, review-handoff, self-review), and 12 workflow commands (check-ci, check-bots, wait-for-bots, babysit-pr, triage-threads, preflight, retro, wrap-up, start-task, status, commit-push-pr, check-spec). Components are namespaced agentive-workflow:<name>. Roster and ships/kit-side rationale: roster.yaml.",
-  "version": "2.1.0",
+  "version": "2.1.1",
   "author": { "name": "movito", "email": "fredrik.matheson@ixda.no" },
   "keywords": ["workflow", "code-review", "agentive", "adversarial", "cross-repo"]
 }

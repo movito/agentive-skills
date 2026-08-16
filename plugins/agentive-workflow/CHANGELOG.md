@@ -5,6 +5,59 @@ All notable changes to the `agentive-workflow` plugin. Format follows
 The upgrader agent fetches this file to compute the reconcile diff for
 consuming projects — keep Added/Removed/Renamed explicit per release.
 
+## [2.1.1] — 2026-08-16
+
+Patch release — no membership change (28 shipped components,
+unchanged). One component hardened: `project-intake` gains quiet
+credential scanning and a post-seeding doctor re-run (KIT-0113).
+
+Tooled cut: `scripts/local/plugin_resync.py` detected 1 drifted
+component and merged it clean — `project-intake` carries no published
+adaptation, so there was nothing to preserve by hand. Kit source:
+agentive-starter-kit `main` at `e8a8f50`.
+
+### Added
+
+- Nothing. No components joined the shipped set in this release.
+
+### Removed
+
+- Nothing. No components retired in this release.
+
+### Renamed
+
+- Nothing. No component renames in this release; no reference
+  reconcile is required in consuming projects.
+
+### Changed
+
+- **`project-intake` (1.3.0) — quiet credential scans (Critical) and
+  a post-seeding doctor.** Two hardening fixes, both sourced from
+  CodeRabbit review of the 2.1.0 cut and fixed at the kit per
+  KIT-0097 (fix-here-then-release):
+  - **The credential scans no longer echo what they find.** Three
+    sites put staged content or matched lines into the transcript,
+    which leaks a credential *before* the scan rejects it: the Step 4c
+    seeding scan printed the full `git diff --cached`, and the Step 2.3
+    and Step 2.1 scans printed matched lines. All three now scan
+    quietly — `git grep -lIE`, filenames only, never staged bytes —
+    and report pass/fail plus offending filenames.
+  - **The Step 4c commit is gated on the scan in the shell, not in
+    prose.** The scan's exit reading is inverted (0 = credential
+    found), so an ungated `git commit` on the next line would commit
+    exactly what the scan exists to catch. The gate is a `case`
+    rather than an `if`/`else` so that a scan which *errored* (128)
+    cannot share the clean path, and `git add -A` is checked so a
+    partial stage cannot authorize an incomplete seeding commit.
+  - **Step 5 re-runs the doctor after seeding.** It previously gated
+    its completion checklist and launch line on the door's doctor
+    tail, which is captured *before* Step 4 fills the task prefix and
+    backlog — so it relayed WARNs the seeding had already cured. It
+    now re-runs `agentive doctor` in the planning repo after the
+    seeding commit and gates on that, while still relaying the door's
+    original tail verbatim. The two are labeled distinctly: the door's
+    tail is install truth, the re-run is repo-state truth.
+
 ## [2.1.0] — 2026-08-15
 
 Minor release — the shipped set changes (KIT-0105): `project-intake`
