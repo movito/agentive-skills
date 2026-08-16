@@ -14,8 +14,8 @@ credential scanning and a post-seeding doctor re-run (KIT-0113).
 Tooled cut: `scripts/local/plugin_resync.py` detected 1 drifted
 component and merged it clean — `project-intake` carries no published
 adaptation, so there was nothing to preserve by hand. Kit source:
-agentive-starter-kit `main` at `175ddcb` (two kit PRs: #135 the
-hardening, #136 the gate corrections below).
+agentive-starter-kit `main` at `e75de7c` (three kit PRs: #135 the
+hardening, #136 and #137 the gate corrections below).
 
 ### Added
 
@@ -32,7 +32,7 @@ hardening, #136 the gate corrections below).
 
 ### Changed
 
-- **`project-intake` (1.3.1) — quiet credential scans (Critical) and
+- **`project-intake` (1.3.2) — quiet credential scans (Critical) and
   a post-seeding doctor.** Two hardening fixes, both sourced from
   CodeRabbit review of the 2.1.0 cut and fixed at the kit per
   KIT-0097 (fix-here-then-release):
@@ -41,8 +41,14 @@ hardening, #136 the gate corrections below).
     which leaks a credential *before* the scan rejects it: the Step 4c
     seeding scan printed the full `git diff --cached`, and the Step 2.3
     and Step 2.1 scans printed matched lines. All three now scan
-    quietly — `git grep -lIE`, filenames only, never staged bytes —
-    and report pass/fail plus offending filenames.
+    quietly — `git grep -laE`, filenames only, never staged bytes —
+    and report pass/fail plus offending filenames. The scan reads
+    binary files too (`-a`): the earlier `-I` skipped them, so a
+    staged binary carrying a credential passed CLEAN — measured on a
+    NUL-containing fixture holding an AWS key, `-lIE` returned exit 1
+    with no output while `-laE` caught it. `-l` still holds output to
+    filenames, so scanning binaries as text cannot put bytes in the
+    transcript.
   - **Both commit paths are gated on the scan in the shell, not in
     prose.** The scan's exit reading is inverted (0 = credential
     found), so an ungated `git commit` on the next line would commit
@@ -63,6 +69,17 @@ hardening, #136 the gate corrections below).
     left staged for remediation; clean tree → status 0, commit
     lands; staging failure → status 1, no commit. Identical results
     with and without `set -e`, and identical between the two gates.
+  - **One polarity, stated once.** The `case` normalizes each gate to
+    the conventional reading — **0 = clean, non-zero = blocked** — and
+    the surrounding prose now says so. Previously it restated the raw
+    `git grep` polarity (0 = credential found) as the agent's decision
+    rule, which is true of the bare command but the opposite of what
+    the gate returns; an agent trusting it would invert its stop /
+    proceed decision on the commit path. The raw polarity is retained
+    only as an explanation of why the `case` arms read as they do, and
+    Step 2.1 — which really does run a bare `grep` — is labelled as
+    such, with an explicit warning not to carry the normalized reading
+    across.
   - **Step 5 re-runs the doctor after seeding.** It previously gated
     its completion checklist and launch line on the door's doctor
     tail, which is captured *before* Step 4 fills the task prefix and
