@@ -147,9 +147,9 @@ components:
     kind: agent
     ships: true
     source: .claude/agents/project-intake.md
-    kit_version: "1.3.0"
-    kit_sha256: 62f9c41afe652922278ee83b1a66794b2f1a8815eeca1a174c4d7d75d39c5989
-    plugin_sha256: 62f9c41afe652922278ee83b1a66794b2f1a8815eeca1a174c4d7d75d39c5989
+    kit_version: "1.3.1"
+    kit_sha256: 6f9680814e0d2b97f954c0bf7198ce281a36b6702c71bcb74c58c6bff01460d7
+    plugin_sha256: 6f9680814e0d2b97f954c0bf7198ce281a36b6702c71bcb74c58c6bff01460d7
     why: >-
       location-agnostic since KIT-0105: composes the packaged door
       (agentive new) and runs in the prototype's own folder
