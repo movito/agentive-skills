@@ -5,6 +5,92 @@ All notable changes to the `agentive-workflow` plugin. Format follows
 The upgrader agent fetches this file to compute the reconcile diff for
 consuming projects — keep Added/Removed/Renamed explicit per release.
 
+## [2.2.0] — 2026-10-18
+
+Minor release — the shipped set changes (KIT-0124): two agents join
+the plugin, `feature-developer-o55` (Opus 5.5) and
+`architecture-reviewer`. 30 shipped components, up from 28. The
+release also brings the plugin up to date with the kit's KIT-0116
+review pipeline, which had left 10 shipped components behind the
+kit.
+
+Tooled cut: `scripts/local/plugin_resync.py` found 10 drifted
+components. 5 merged clean (`planner`, `planner-f5`,
+`document-reviewer`, `security-reviewer`, `review-handoff`) and 5
+conflicted. In `feature-developer` and `feature-developer-f5` only
+the frontmatter version lines conflicted. In `code-reviewer`,
+`commit-push-pr` and `preflight` the conflicts were kit rewrites of
+lines carrying the published adaptations. All 5 were resolved to the
+kit text, with the namespacing transform re-applied and
+`code-reviewer`'s "activate the project you are working in" warning
+kept. A re-run of the tool still reports these three as conflicts,
+because it always merges from the previously-rostered base, so their
+`kit_sha256` and `kit_version` columns were recorded with the tool's
+own roster helper. The two new agents have no published body to merge
+against: `feature-developer-o55` was built by a three-way merge (base:
+kit `feature-developer`; ours: the published `feature-developer`;
+theirs: kit `feature-developer-o55`), which carries the published
+project-agnostic context block over to it. `architecture-reviewer`
+ships byte-identical to the kit; it has no project-local block. Kit
+source: agentive-starter-kit `main` at `944ecd2`.
+
+### Added
+
+- **`feature-developer-o55` (agent, claude-opus-5-5, 1.0.0)**: an
+  Opus 5.5 variant of `feature-developer`. The workflow is the same as
+  `feature-developer` 2.8.0; only the `model:` pin and the model notes
+  differ. A separate file for the same reason as
+  `feature-developer-f5`: the pin is frontmatter (KIT-ADR-0025 §3).
+  Invoke as `agentive-workflow:feature-developer-o55`. The default
+  `feature-developer` stays on `claude-opus-5`.
+- **`architecture-reviewer` (agent, claude-opus-5, 1.0.0)**: a
+  read-only (Read/Grep/Glob) implementation-level review covering ADR
+  adherence, module boundaries, pattern conformance and
+  single-authority violations on real diffs. It runs when a task
+  declares the `architecture` Review Flag (KIT-0116 FR-8). Like
+  `code-reviewer`, it reads the consuming repo's
+  `.kit/context/patterns.yml`, `.kit/context/workflows/REVIEW-PIPELINE.md`
+  and ADRs.
+
+### Removed
+
+- Nothing. No components retired in this release.
+
+### Renamed
+
+- Nothing. No component renames in this release; no reference
+  reconcile is required in consuming projects.
+
+### Changed
+
+- **`code-reviewer` (2.0.0): read-only toolset (KIT-ADR-0036).**
+  `Bash` is removed from `tools:`, so the agent can no longer run git,
+  `verify-ci.sh` or `/agentive-workflow:check-ci`. The diff scope
+  arrives in the spawn prompt, findings come back as the final message
+  for the caller to persist, and CI state is the caller's job
+  (preflight Gate 1). Breaking for any project that relied on
+  code-reviewer running shell commands.
+- **`preflight` (1.6.0): 8 gates, up from 7.** Gate 8 (review pass
+  done) is session-checked against the review-pass record described in
+  `.kit/context/workflows/REVIEW-PIPELINE.md`. The `agentive
+  preflight` CLI still emits gates 1–7 only, so plugin/CLI version
+  skew cannot break consumers.
+- **`commit-push-pr` (1.2.0)**: post-PR steps now verify that the
+  pre-PR native review pass ran and was persisted, then hand off once
+  all 8 gates pass.
+- **`feature-developer` (2.8.0) / `feature-developer-f5` (1.8.0)**:
+  new Phase 5b, a default-on native review pass before the PR opens
+  (fix-or-defer triage, persisted record), plus the Tier 2 contract
+  for spawning read-only reviewers as background subagents.
+- **`planner` (2.3.0) / `planner-f5` (1.3.0)**: planners can declare
+  **Review Flags** on tasks, and the permission-trap footgun note cites
+  KIT-ADR-0036.
+- **`security-reviewer` (1.4.0) / `document-reviewer` (1.4.0)**:
+  delegation-contract section and grounded context inputs; WebSearch
+  and WebFetch are explicitly permitted (KIT-ADR-0036).
+- **`review-handoff` (1.2.0)**: the review starter points to the new
+  review-pass record.
+
 ## [2.1.1] — 2026-08-16
 
 Patch release — no membership change (28 shipped components,

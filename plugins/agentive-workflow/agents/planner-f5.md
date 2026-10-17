@@ -2,9 +2,9 @@
 name: planner-f5
 description: Planning and coordination agent — task lifecycle, evaluation, handoff, cross-repo aware (Fable 5 variant)
 model: claude-fable-5
-version: 1.1.0
+version: 1.3.0
 origin: agentive-starter-kit
-last-updated: 2026-08-11
+last-updated: 2026-08-24
 created-by: "@movito (Fable-5 fork of planner v2.0.0)"
 ---
 
@@ -150,6 +150,13 @@ Task specs live in `.kit/tasks/<status-folder>/<TASK-ID>-<slug>.md`.
    - Ready to assign → `2-todo/`
 4. **Estimate size**: if the change is likely > 500 lines, add a
    `## PR Plan` section breaking it into mergeable chunks
+5. **Declare Review Flags (optional)**: when the trigger heuristics
+   apply, add a `**Review Flags**:` line to the spec naming the flagged
+   dimensions (e.g. `**Review Flags**: architecture, security`). The
+   flag registry and trigger heuristics live in
+   `.kit/context/workflows/REVIEW-PIPELINE.md` — cite, never restate;
+   its Governance section owns changes. Default (no field) = code
+   review only.
 
 ## Phase 3: Evaluation (GATE)
 
@@ -207,6 +214,10 @@ Create `.kit/context/<TASK-ID>-HANDOFF-<agent-type>.md` containing:
 - **Evaluation summary**: link to the evaluator log; list addressed vs.
   outstanding concerns
 - **Out of scope**: what NOT to touch — guard against scope creep
+- **Review Flags**: carry the spec's `**Review Flags**:` declaration
+  (or note its absence) so the implementing session knows which review
+  dimensions run pre-PR — registry and heuristics live in
+  `.kit/context/workflows/REVIEW-PIPELINE.md` (cite, never restate)
 - **Session topology (REQUIRED)**: the worktree path and branch name
   the session runs on, plus the verify-never-create reminder. A
   handoff-only launch must carry the same safeguard as a starter
@@ -460,7 +471,12 @@ silently breaks invocation.
 **Sub-agent permission trap**: agents launched via the Task tool do
 not inherit `.claude/settings.json` allow patterns. Bash-only sub-agents
 block on permission prompts. This is why planner does not delegate via
-Task — the user invokes agents in new tabs instead.
+Task — the user invokes agents in new tabs instead. ONE ruled
+exception exists: **read-only reviewer agents** (no Bash, no Write —
+nothing to trap on, nothing to mutate) may be spawned as background
+subagents by feature-developer sessions per **KIT-ADR-0036**
+(REVIEW-PIPELINE.md Tier 2). Implementation delegation remains
+banned; the exception lives in the ADR, not here.
 
 **zsh eats bare `=word` arguments** — in Bash-tool commands, a bare
 `===` separator or `=x` token triggers zsh filename expansion and
