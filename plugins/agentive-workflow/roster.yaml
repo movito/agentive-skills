@@ -51,36 +51,45 @@ components:
     kind: agent
     ships: true
     source: .claude/agents/feature-developer.md
-    kit_version: "2.6.1"
-    kit_sha256: f1acac518791bffa279358725b7f7c8a1ece88337d0bca892ec096f26899c3e7
-    plugin_sha256: f3ff1c56913a6a0078739577ab1889fe1f7ac8022497098537390bf33ab95a97
+    kit_version: "2.8.0"
+    kit_sha256: b5a81ec568c1ba54f1f985d33843bf15e1505f4ef0a3a1b313a08e1368ee71eb
+    plugin_sha256: eaeed06271ef6ce5a3fdcb83160b6ea0c7b87857544462540960bf9fbd900640
     why: >-
       canonical gated implementation agent — the plugin's core
   - name: feature-developer-f5
     kind: agent
     ships: true
     source: .claude/agents/feature-developer-f5.md
-    kit_version: "1.6.1"
-    kit_sha256: d6ad5febfd3826346320763fcebb618721797043fb48edcd671d9824c38cb7cd
-    plugin_sha256: 11df32a52052cd4b306113218f52f97b26f9d20c2590689db55c856974d8d459
+    kit_version: "1.8.0"
+    kit_sha256: 1c9cc159ef24861be3a73805a0e8ea9c43cda64fd43b57f066bdaa0f5ff96fe2
+    plugin_sha256: 459929517a4f297aa40b4aa6ef025e552d856b6ea5c68f892c3688c89cbe012e
     why: >-
       Fable-class variant; separate file because the model: pin is frontmatter (KIT-ADR-0025 §3)
+  - name: feature-developer-o55
+    kind: agent
+    ships: true
+    source: .claude/agents/feature-developer-o55.md
+    kit_version: "1.0.0"
+    kit_sha256: 6089688a4216dd8ed610eeb2bcda8de7876b92222c30f427a6284888520ad8a8
+    plugin_sha256: a7aa7d61968bb5c3cd8ef46b8120bf804e81e2198f5e934b3731b853e67dcb17
+    why: >-
+      Opus 5.5 variant (added 2.2.0, KIT-0124); same frontmatter-pin rationale as feature-developer-f5
   - name: planner
     kind: agent
     ships: true
     source: .claude/agents/planner.md
-    kit_version: "2.1.0"
-    kit_sha256: 7d710508c3179b33a79e132a3c2dfc5ff3e992adff916e78619d296270d63a28
-    plugin_sha256: 4072e8c4c5b90f306a35e21b476a057a96bbd212739eb79f2368abdfd02d82a8
+    kit_version: "2.3.0"
+    kit_sha256: 3f1ab4e5017602ce7f3a7494a8bfb02848ad3410758c35089b9f3a80abaf876e
+    plugin_sha256: 990609df2bca25d1fa5af1048ace002dbbbe4f7b5018eaa2f1801004e44cc071
     why: >-
       planning/coordination agent; the plugin is THE agent channel (KIT-ADR-0028) — 1.x shipping no planner triggered this release
   - name: planner-f5
     kind: agent
     ships: true
     source: .claude/agents/planner-f5.md
-    kit_version: "1.1.0"
-    kit_sha256: a68696b90706af3252c76c67e74f3d632e5e65b9b98efe26c086731ea4edadbd
-    plugin_sha256: 4412d76725935fdf186e87c80c0ac9a1f93f48eddf160f17d12bd1556ae8b107
+    kit_version: "1.3.0"
+    kit_sha256: 1ef93218243a2f7a10920dc49e8e0b66ed40fe1177eeec39129f70ec922b9f12
+    plugin_sha256: ef465b65514d69e774bfe7fd090ae2413a10b0d80bbd044287e1e9fabbec584c
     why: >-
       Fable-class planner variant; same frontmatter-pin rationale as feature-developer-f5
   - name: ci-checker
@@ -92,13 +101,22 @@ components:
     plugin_sha256: 229e8c194a04c7ade3d3f9242102e6b75b367a6db17039912b1f00f8e7ccf6fd
     why: >-
       consumer-facing CI verification; shipped since 1.0
+  - name: architecture-reviewer
+    kind: agent
+    ships: true
+    source: .claude/agents/architecture-reviewer.md
+    kit_version: "1.0.0"
+    kit_sha256: 691bdd8484e44c4ddfd14871b38a03effffcc1e8bc4508617834833984c81f37
+    plugin_sha256: 691bdd8484e44c4ddfd14871b38a03effffcc1e8bc4508617834833984c81f37
+    why: >-
+      read-only implementation-level architecture reviewer (KIT-0116 FR-8); added 2.2.0 (KIT-0124)
   - name: code-reviewer
     kind: agent
     ships: true
     source: .claude/agents/code-reviewer.md
-    kit_version: "1.2.0"
-    kit_sha256: 3ac4e06c4c522f31df7a3a0a5a19a045047a0da490d9d194cdf1db6777da0b20
-    plugin_sha256: d53227d5c04ad5fa9a73615dfbd4ad4d650cbbe806ca6d6687fac11ee5b151c6
+    kit_version: "2.0.0"
+    kit_sha256: 27877637379fb63f465dffc23b4e99eb029f2c574ab645c4074fdf128ffba3ca
+    plugin_sha256: 6de83d2bce1c371db1666345974758519cc57d583e2316eabdc6680d26b003ca
     why: >-
       consumer-facing implementation review; shipped since 1.0
   - name: test-runner
@@ -114,18 +132,18 @@ components:
     kind: agent
     ships: true
     source: .claude/agents/document-reviewer.md
-    kit_version: "1.3.0"
-    kit_sha256: f82f6770288b61c2d5654da767fd0e8150856fee568adf0987ba3f9044a3ed66
-    plugin_sha256: 55a9432acb5dbe165d84138e612a790e0777e3eb201215a5b4e06f1364fdd8ec
+    kit_version: "1.4.0"
+    kit_sha256: 020498aefd084c54afdcfca35665d27ecea85daccdd36ad2cafd83784ce2c9d0
+    plugin_sha256: c326bf8e9283baf299d8c9bedcf5de9ebff0281022adc12bd0534d0e29a7727d
     why: >-
       generic documentation review; no kit machinery in the body
   - name: security-reviewer
     kind: agent
     ships: true
     source: .claude/agents/security-reviewer.md
-    kit_version: "1.3.0"
-    kit_sha256: a3769892330aeae01c3ea3e7ccd13703c104a271489d37163a9a1b7b196a57d8
-    plugin_sha256: fbf23c25fff89a8cf81ae59b979cffc9c55636999aca8121ffb57b5935ff9ab3
+    kit_version: "1.4.0"
+    kit_sha256: 005869f632ce4e7d122efafadfa20ded4d566ea7a968f60bcc04d7c1654b3215
+    plugin_sha256: dac0bdc84506182167ece2a1c10f94c9b8a53aeacc56036baf9c628febd9efd1
     why: >-
       generic security review; no kit machinery in the body
   - name: upgrader
@@ -217,18 +235,18 @@ components:
     kind: command
     ships: true
     source: .claude/commands/commit-push-pr.md
-    kit_version: "1.1.0"
-    kit_sha256: d0e614c46e2ada1540549956d667eb8619653df9dec051b131637ff36de3e899
-    plugin_sha256: 6de2362b7fd8af84580184bb2e1bc24d6d167fcbfd9a6330a1932d033c11b34a
+    kit_version: "1.2.0"
+    kit_sha256: 76011721658b9dac52cdc38450fc74785f414af8b01b104119a77a9b2c7f30b9
+    plugin_sha256: cb6787a0d8a668054de63c97ec6ff984660851aa8f05e33b1d3aa548224976ce
     why: >-
       cross-repo-aware workflow command; shipped since 1.0 generation
   - name: preflight
     kind: command
     ships: true
     source: .claude/commands/preflight.md
-    kit_version: "1.5.0"
-    kit_sha256: 59ca930153177cbf5992d0da037df15a2b789d94cf597e5372180b9f900e7399
-    plugin_sha256: b0760829c479cb219d9af72ffd4f46b1660ddcf42f1ad656bfebf4c5c6ca3898
+    kit_version: "1.6.0"
+    kit_sha256: 9a8d75c9ff7cd2411fad62c7b62fdeea356c1e652c71a04ef57d0bf09d8e872e
+    plugin_sha256: ed74ea3fb27b573cab56e083b01dc7035e8be2d4f5b623fc62ce5673757e10c6
     why: >-
       cross-repo-aware workflow command; shipped since 1.0 generation
   - name: retro
@@ -328,9 +346,9 @@ components:
     kind: skill
     ships: true
     source: .claude/skills/review-handoff/SKILL.md
-    kit_version: "1.1.0"
-    kit_sha256: 28ceb48bac0483335960303b1b4fb7198f6b1ee82a83440c121ad83e443e6c2e
-    plugin_sha256: 108c8b97dfbc85debe9fbd893689856a88eeb35760db3e2faad3186b7e809af3
+    kit_version: "1.2.0"
+    kit_sha256: 20d0bc58abb96bf23d9683029170d11a229e358a16ce00ac35b347edccbe787c
+    plugin_sha256: 90f56c5b14d453cf92fb937b0c2b2d01cd606ee002badae5327043a6774f5750
     why: >-
       workflow skill consumed by the shipped agents and commands
   - name: self-review

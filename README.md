@@ -11,7 +11,7 @@ Anything committed here, including release metadata, is visible to anyone.
 
 ## What's inside
 
-One plugin, `agentive-workflow` (2.1.1). Every component is namespaced
+One plugin, `agentive-workflow` (2.2.0). Every component is namespaced
 `agentive-workflow:<name>` when the plugin is enabled (e.g. `/agentive-workflow:preflight`,
 `Agent(subagent_type="agentive-workflow:feature-developer")`).
 
@@ -27,7 +27,7 @@ content is newer than the last published release here.
 | `bot-triage` | 1.1.0 | Triage/reply/resolve BugBot & CodeRabbit comments |
 | `code-review-evaluator` | 1.9.0 | Adversarial code-review evaluator after bot rounds |
 | `pre-implementation` | 1.2.0 | Pre-code checks: pattern reuse, API misuse, spec drift |
-| `review-handoff` | 1.1.0 | Hand off a PR for human review after bots pass |
+| `review-handoff` | 1.2.0 | Hand off a PR for human review after bots pass |
 | `self-review` | 1.2.0 | Input-boundary self-review pass before committing |
 
 ### Commands
@@ -44,9 +44,11 @@ single-repo mode when no such section exists.
 |---|---|---|
 | `feature-developer` | claude-opus-5 | Canonical gated implementation workflow, inline CI/bot polling |
 | `feature-developer-f5` | claude-fable-5 | Fable-class variant of feature-developer (same body, different pin) |
+| `feature-developer-o55` | claude-opus-5-5 | Opus 5.5 variant of feature-developer (same workflow, different pin) |
 | `planner` | claude-opus-4-8 | Planning/coordination: task lifecycle, evaluation, handoff |
 | `planner-f5` | claude-fable-5 | Fable-class variant of planner |
-| `code-reviewer` | claude-sonnet-5 | Post-implementation quality review |
+| `code-reviewer` | claude-sonnet-5 | Post-implementation quality review (read-only, KIT-ADR-0036) |
+| `architecture-reviewer` | claude-opus-5 | Read-only implementation-level review: ADR adherence, boundaries, patterns |
 | `ci-checker` | claude-sonnet-5 | Interactive CI status verification |
 | `test-runner` | claude-sonnet-5 | TDD / QA verification |
 | `document-reviewer` | claude-sonnet-5 | Documentation quality review |
