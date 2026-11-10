@@ -44,52 +44,49 @@
 # exactly like stale content (FAIL).
 
 plugin: agentive-workflow
-plugin_version: "2.1.1"
+plugin_version: "3.0.0"
 kit_repo: movito/agentive-starter-kit
 components:
   - name: feature-developer
     kind: agent
     ships: true
     source: .claude/agents/feature-developer.md
-    kit_version: "2.8.0"
-    kit_sha256: b5a81ec568c1ba54f1f985d33843bf15e1505f4ef0a3a1b313a08e1368ee71eb
-    plugin_sha256: eaeed06271ef6ce5a3fdcb83160b6ea0c7b87857544462540960bf9fbd900640
+    kit_version: "2.8.1"
+    kit_sha256: b5f663c9aa1298613696d788904e36dbda795f3b382e0c6b7fc215cf1dd500b5
+    plugin_sha256: fc417ae2724231ea6ed6ed3a8d7e00b05dc2b65f031abd20180ef3f67ad18975
     why: >-
       canonical gated implementation agent — the plugin's core
   - name: feature-developer-f5
     kind: agent
     ships: true
     source: .claude/agents/feature-developer-f5.md
-    kit_version: "1.8.0"
-    kit_sha256: 1c9cc159ef24861be3a73805a0e8ea9c43cda64fd43b57f066bdaa0f5ff96fe2
-    plugin_sha256: 459929517a4f297aa40b4aa6ef025e552d856b6ea5c68f892c3688c89cbe012e
+    kit_version: "1.8.1"
+    kit_sha256: a3af2308dca694583a8a9dadab434801a26f8cb6b8db26df378f7d7527636045
+    plugin_sha256: 52b12ffc724a865f29a48b4d8f7a06903e648a13aaada6c7ecca1cdcb8cfe94d
     why: >-
       Fable-class variant; separate file because the model: pin is frontmatter (KIT-ADR-0025 §3)
   - name: feature-developer-o55
     kind: agent
-    ships: true
-    source: .claude/agents/feature-developer-o55.md
-    kit_version: "1.0.0"
-    kit_sha256: 6089688a4216dd8ed610eeb2bcda8de7876b92222c30f427a6284888520ad8a8
-    plugin_sha256: a7aa7d61968bb5c3cd8ef46b8120bf804e81e2198f5e934b3731b853e67dcb17
+    ships: false
+    retired: true
     why: >-
-      Opus 5.5 variant (added 2.2.0, KIT-0124); same frontmatter-pin rationale as feature-developer-f5
+      retired in 3.0.0 — pilot concluded; canonical feature-developer now carries the opus-5-5 pin it piloted (KIT-0127)
   - name: planner
     kind: agent
     ships: true
     source: .claude/agents/planner.md
-    kit_version: "2.3.0"
-    kit_sha256: 3f1ab4e5017602ce7f3a7494a8bfb02848ad3410758c35089b9f3a80abaf876e
-    plugin_sha256: 990609df2bca25d1fa5af1048ace002dbbbe4f7b5018eaa2f1801004e44cc071
+    kit_version: "2.3.1"
+    kit_sha256: 1c72637388bc248ba15ed4aad035b45a3fb9e1487b5974b0084ab04436652da5
+    plugin_sha256: 952704a67c679c666f8cfad415e28dff7a21b619e3647338fbedee3cd092deeb
     why: >-
       planning/coordination agent; the plugin is THE agent channel (KIT-ADR-0028) — 1.x shipping no planner triggered this release
   - name: planner-f5
     kind: agent
     ships: true
     source: .claude/agents/planner-f5.md
-    kit_version: "1.3.0"
-    kit_sha256: 1ef93218243a2f7a10920dc49e8e0b66ed40fe1177eeec39129f70ec922b9f12
-    plugin_sha256: ef465b65514d69e774bfe7fd090ae2413a10b0d80bbd044287e1e9fabbec584c
+    kit_version: "1.3.1"
+    kit_sha256: 59a78ebeeba143381c22750e68eca39c2fd7f76813bc37a2af17fd064d97f1d3
+    plugin_sha256: 2bfa2b5227f64a203b48815a1f78dac6e971c8d8d432df87e9d8fe366d9f9c38
     why: >-
       Fable-class planner variant; same frontmatter-pin rationale as feature-developer-f5
   - name: ci-checker
