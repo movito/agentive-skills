@@ -5,6 +5,52 @@ All notable changes to the `agentive-workflow` plugin. Format follows
 The upgrader agent fetches this file to compute the reconcile diff for
 consuming projects — keep Added/Removed/Renamed explicit per release.
 
+## [2.3.0] — 2026-11-10
+
+Minor release because the shipped set changes (KIT-0127):
+`feature-developer-o55` is retired. 29 shipped components, down from
+30. The release also brings over the kit's model-rollout pin refresh
+for four agents.
+
+Tooled cut: `scripts/local/plugin_resync.py` found 4 drifted
+components (`feature-developer`, `feature-developer-f5`, `planner`,
+`planner-f5`) and merged all 4 clean. Only the frontmatter `model:`,
+`version:` and `last-updated:` lines changed, and the published
+adaptations are untouched. Kit source: agentive-starter-kit `main` at
+`7f3784c`.
+
+### Added
+
+- Nothing. No components joined the shipped set in this release.
+
+### Removed
+
+- **`feature-developer-o55` (agent)**: retired. It was a pilot of
+  `feature-developer` pinned to `claude-opus-5-5`, and the canonical
+  `feature-developer` now carries that pin itself. Consuming projects
+  that invoke `agentive-workflow:feature-developer-o55` should switch
+  to `agentive-workflow:feature-developer`. The workflow is the same.
+  The roster keeps the entry as `ships: false`, `retired: true`.
+
+### Renamed
+
+- Nothing. No component renames in this release; no reference
+  reconcile is required in consuming projects.
+
+### Changed
+
+- **`feature-developer` (2.8.1)**: `model:` pin `claude-opus-5` →
+  `claude-opus-5-5`.
+- **`feature-developer-f5` (1.8.1)**: `model:` pin `claude-fable-5` →
+  `claude-fable-5-2`.
+- **`planner` (2.3.1)**: `model:` pin `claude-opus-4-8` →
+  `claude-opus-5-5`.
+- **`planner-f5` (1.3.1)**: `model:` pin `claude-fable-5` →
+  `claude-fable-5-2`.
+- **`roster.yaml` `plugin_version` corrected**: the 2.2.0 release left
+  it at `"2.1.1"`. It now reads `"2.3.0"`, matching `plugin.json` and
+  `marketplace.json`.
+
 ## [2.2.0] — 2026-10-18
 
 Minor release — the shipped set changes (KIT-0124): two agents join

@@ -11,7 +11,7 @@ Anything committed here, including release metadata, is visible to anyone.
 
 ## What's inside
 
-One plugin, `agentive-workflow` (2.2.0). Every component is namespaced
+One plugin, `agentive-workflow` (2.3.0). Every component is namespaced
 `agentive-workflow:<name>` when the plugin is enabled (e.g. `/agentive-workflow:preflight`,
 `Agent(subagent_type="agentive-workflow:feature-developer")`).
 
@@ -42,11 +42,10 @@ single-repo mode when no such section exists.
 
 | Agent | Model | Notes |
 |---|---|---|
-| `feature-developer` | claude-opus-5 | Canonical gated implementation workflow, inline CI/bot polling |
-| `feature-developer-f5` | claude-fable-5 | Fable-class variant of feature-developer (same body, different pin) |
-| `feature-developer-o55` | claude-opus-5-5 | Opus 5.5 variant of feature-developer (same workflow, different pin) |
-| `planner` | claude-opus-4-8 | Planning/coordination: task lifecycle, evaluation, handoff |
-| `planner-f5` | claude-fable-5 | Fable-class variant of planner |
+| `feature-developer` | claude-opus-5-5 | Canonical gated implementation workflow, inline CI/bot polling |
+| `feature-developer-f5` | claude-fable-5-2 | Fable-class variant of feature-developer (same body, different pin) |
+| `planner` | claude-opus-5-5 | Planning/coordination: task lifecycle, evaluation, handoff |
+| `planner-f5` | claude-fable-5-2 | Fable-class variant of planner |
 | `code-reviewer` | claude-sonnet-5 | Post-implementation quality review (read-only, KIT-ADR-0036) |
 | `architecture-reviewer` | claude-opus-5 | Read-only implementation-level review: ADR adherence, boundaries, patterns |
 | `ci-checker` | claude-sonnet-5 | Interactive CI status verification |
