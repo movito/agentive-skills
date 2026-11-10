@@ -44,7 +44,7 @@
 # exactly like stale content (FAIL).
 
 plugin: agentive-workflow
-plugin_version: "2.3.0"
+plugin_version: "3.0.0"
 kit_repo: movito/agentive-starter-kit
 components:
   - name: feature-developer
@@ -70,7 +70,7 @@ components:
     ships: false
     retired: true
     why: >-
-      retired in 2.3.0 — pilot concluded; canonical feature-developer now carries the opus-5-5 pin it piloted (KIT-0127)
+      retired in 3.0.0 — pilot concluded; canonical feature-developer now carries the opus-5-5 pin it piloted (KIT-0127)
   - name: planner
     kind: agent
     ships: true

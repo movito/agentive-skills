@@ -5,12 +5,14 @@ All notable changes to the `agentive-workflow` plugin. Format follows
 The upgrader agent fetches this file to compute the reconcile diff for
 consuming projects — keep Added/Removed/Renamed explicit per release.
 
-## [2.3.0] — 2026-11-10
+## [3.0.0] — 2026-11-10
 
-Minor release because the shipped set changes (KIT-0127):
-`feature-developer-o55` is retired. 29 shipped components, down from
-30. The release also brings over the kit's model-rollout pin refresh
-for four agents.
+Major release because a shipped component is removed (KIT-0127):
+`feature-developer-o55` is retired, so references to
+`agentive-workflow:feature-developer-o55` stop resolving. This follows
+the 2.0.0 precedent, where retiring v6/v7 was a major release. 29
+shipped components, down from 30. The release also brings over the
+kit's model-rollout pin refresh for four agents.
 
 Tooled cut: `scripts/local/plugin_resync.py` found 4 drifted
 components (`feature-developer`, `feature-developer-f5`, `planner`,
@@ -23,7 +25,7 @@ adaptations are untouched. Kit source: agentive-starter-kit `main` at
 
 - Nothing. No components joined the shipped set in this release.
 
-### Removed
+### Removed (BREAKING)
 
 - **`feature-developer-o55` (agent)**: retired. It was a pilot of
   `feature-developer` pinned to `claude-opus-5-5`, and the canonical
@@ -34,8 +36,10 @@ adaptations are untouched. Kit source: agentive-starter-kit `main` at
 
 ### Renamed
 
-- Nothing. No component renames in this release; no reference
-  reconcile is required in consuming projects.
+- Nothing. No component renames in this release. Consuming projects
+  still need one reference reconcile, for the removal above: replace
+  `agentive-workflow:feature-developer-o55` with
+  `agentive-workflow:feature-developer`.
 
 ### Changed
 
@@ -48,7 +52,7 @@ adaptations are untouched. Kit source: agentive-starter-kit `main` at
 - **`planner-f5` (1.3.1)**: `model:` pin `claude-fable-5` →
   `claude-fable-5-2`.
 - **`roster.yaml` `plugin_version` corrected**: the 2.2.0 release left
-  it at `"2.1.1"`. It now reads `"2.3.0"`, matching `plugin.json` and
+  it at `"2.1.1"`. It now reads `"3.0.0"`, matching `plugin.json` and
   `marketplace.json`.
 
 ## [2.2.0] — 2026-10-18
